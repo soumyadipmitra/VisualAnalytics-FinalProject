@@ -1,0 +1,11 @@
+---
+title: "Visuals"
+author: "Soumyadip"
+date: "11/27/2019"
+output: html_document
+---
+### Data Sources:
+https://www.kaggle.com/new-york-state/nys-children-in-foster-care-annually
+https://www.ncsc.org/Microsites/EveryKid/Home/Data-and-Reform-Efforts/Data-By-State.aspx
+https://www.acf.hhs.gov/cb/resource/trends-in-foster-care-and-adoption
+

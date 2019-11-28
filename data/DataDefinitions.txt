@@ -1,0 +1,19 @@
+Data Definition for children-in-foster-care-annually-beginning-1994.csv
+https://www.kaggle.com/new-york-state/nys-children-in-foster-care-annually
+County - Applicable county or Local District for Social Services (LDSS) in New York State. St. Regis Mohawk is a considered a LDSS and is reported as a separate county for this purpose.
+Year - Reporting year for foster care activity.
+Adoptive Home - This is the total number of care days provided for children in an adoptive home. Adoptive homes include adoptive and/or adoption subsidized homes.
+Agency Operated Boarding Home - This is the total number of care days provided for children in foster care residing in an Agency Operated Boarding Home.
+Approved Relative Home - This is the total number of care days provided for children in foster care residing with a relative. The relative has been approved as a foster parent.
+Foster Boarding Home - This is the total number of care days provided for children in foster care residing in a regular non-relative foster home.
+Group Home - This is the total number of care days provided for children in foster care residing in a Congregate Care home.
+Group Residence - This is the total number of care days provided for children in foster care residing in a group residence. These are also considered congregate care for youth.
+Institution - This is the total number of care days provided for children in foster care residing in an Institution. This facility type is a larger facility for congregate care.
+Supervised Independent Living - This is the total number of care days provided for children in foster care, but living on their own. These young adults have been approved by OCFS to live on their own.
+Other - This is the total number of care days provided for children in foster care residing in residential treatment facilities, skilled nursing facilities, specialized schools, etc.
+Total Days In Care - This is the total number of care days provided for children in foster care residing in all facility types.
+Admissions - Total children admitted to foster care in the calendar year.
+Discharges - Total number of children discharged from care during the calendar year.
+Children In Care - Total number of children in Foster Care on December 31 of the calendar year. This is point in time data.
+Number of Children Served - Total number of children served during the year. This includes children that were admitted in previous years as well as those admitted during the given year. As a result, this is usually higher than both admissions and point in time in care.
+Indicated CPS Reports - This is the total number of Child Protective Services (CPS) reports that are indicated for abuse/maltreatment
