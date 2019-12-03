@@ -119,24 +119,8 @@
   \thm@postskip=\thm@preskip
 }
 \makeatother
-% https://github.com/rstudio/rmarkdown/issues/337
-\let\rmarkdownfootnote\footnote%
-\def\footnote{\protect\rmarkdownfootnote}
-
-% https://github.com/rstudio/rmarkdown/pull/252
-\usepackage{titling}
-\setlength{\droptitle}{-2em}
-
-\pretitle{\vspace{\droptitle}\centering\huge}
-\posttitle{\par}
-
-\preauthor{\centering\large\emph}
-\postauthor{\par}
-
-\predate{\centering\large\emph}
-\postdate{\par}
 \usepackage[]{natbib}
-\bibliographystyle{apalike}
+\bibliographystyle{plainnat}
 
 \title{Foster Care Project Documentation}
 \author{Soumydip Mitra, Ramya Prakash, Shruti Agrawal}
@@ -264,7 +248,5 @@ Some \emph{significant} applications are demonstrated in this chapter.
 \chapter{Final Words}\label{final-words}}
 
 We have finished a nice book.
-
-\bibliography{book.bib,packages.bib}
 
 \end{document}

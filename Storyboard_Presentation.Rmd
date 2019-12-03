@@ -1,0 +1,133 @@
+---
+title: "Foster Care Project Presentation"
+output: 
+  flexdashboard::flex_dashboard:
+    source_code: embed
+    theme: spacelab
+    social: [ "twitter", "facebook", "menu" ]
+---
+```{r include=FALSE}
+library(flexdashboard)
+library(ggplot2)
+library(tidyverse)
+library(tidyr)
+library(lubridate)
+```
+
+Intro Tab {.storyboard}
+=========================================
+
+###  Tab 1 Slide 1
+
+Intro Image here
+
+***
+
+Any text here
+
+
+
+### Tab 1 Slide 2
+
+Visuals here
+
+***
+
+Comments on visuals
+
+Tab 2 {.storyboard}
+=========================================
+
+### Tab 2 Slide 1
+
+Visuals Here
+
+***
+
+Points here
+
+
+### Tab 2 Slide 2
+
+Visuals here
+
+***
+
+- Points on visuals here
+
+### Tab 2 Slide 3
+
+Visuals here
+
+***
+
+Points here
+
+### Tab 2 Slide 4
+
+Visuals here
+
+***
+
+Points here
+
+
+Tab 3 {.storyboard}
+=========================================
+
+### Tab 3 Slide 1
+
+Visuals here
+
+***
+
+Points here
+
+### Tab 3 Slide 2
+
+Visuals Here
+
+***
+
+Points here
+
+### Tab 3 Slide 3
+
+Visuals here
+
+***
+
+Points here
+
+### Tab 3 Slide 4
+
+Visuals here
+
+***
+
+Points here
+
+
+
+Conclusion {.storyboard}
+=========================================
+
+### THANK YOU!!
+
+Thank You
+
+
+***
+
+
+Our GitHub repo: 
+
+
+Our Rpubs link: 
+
+
+Shiny app link:
+
+
+
+THANK YOU!!
