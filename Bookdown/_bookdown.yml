@@ -1,0 +1,5 @@
+book_filename: "Foster_Care_Project_Documentation"
+language:
+  ui:
+    chapter_name: "Chapter "
+delete_merged_file: true

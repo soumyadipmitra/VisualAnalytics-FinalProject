@@ -1,5 +1,5 @@
---- 
-title: "Foster Care Project Documentation - Visua Analytics"
+---
+title: "Foster Care Project Documentation - Visual Analytics"
 author: "Soumyadip Ramya Shruti"
 date: "`r Sys.Date()`"
 documentclass: book
