@@ -9,3 +9,28 @@ https://www.kaggle.com/new-york-state/nys-children-in-foster-care-annually
 https://www.ncsc.org/Microsites/EveryKid/Home/Data-and-Reform-Efforts/Data-By-State.aspx
 https://www.acf.hhs.gov/cb/resource/trends-in-foster-care-and-adoption
 
+```{r message=FALSE, warning=FALSE}
+library(readxl)
+```
+
+## Read the data
+```{r}
+state_data_served <- read_excel("data/afcars_state_data_tables_09thru18.xlsx", range = "Served!A8:K60")
+head(state_data_served)
+```
+
+## Map Plot
+https://socviz.co/maps.html
+```{r}
+library(maps)
+us_states <- map_data("state")
+head(us_states)
+```
+
+```{r}
+library(mapproj)
+ggplot(data = us_states, mapping = aes(x = long, y = lat, group = group, fill = region)) +
+  geom_polygon(color = "gray90", size = 0.1) +
+  coord_map(projection = "albers", lat0 = 39, lat1 = 45) +
+  guides(fill=FALSE)
+```
