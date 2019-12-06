@@ -9,27 +9,73 @@ https://www.kaggle.com/new-york-state/nys-children-in-foster-care-annually
 https://www.ncsc.org/Microsites/EveryKid/Home/Data-and-Reform-Efforts/Data-By-State.aspx
 https://www.acf.hhs.gov/cb/resource/trends-in-foster-care-and-adoption
 
-https://github.com/nick-occ/dsba_5122_final_project
 ```{r message=FALSE, warning=FALSE}
 library(readxl)
 library(sf)
 library(tidyverse)
 library(viridis)
 library(rvest)
+library(plotly)
 ```
 
 ## Read the data
+```{r load-data-transformation}
+#national dataset
+nation_data<-read_excel("data/national_afcars_trends_2009_through_2018.xlsx",sheet="Data")
+
+#State dataset
+#Numbers of Children Served in Foster Care, by State
+state_served <- read_excel("data/afcars_state_data_tables_09thru18.xlsx",range="Served!A8:K60") %>%
+gather(year,Served,'FY 2009':'FY 2018')
+
+#Numbers of Children in Foster Care on September 30th, by State
+state_inCare <- read_excel("data/afcars_state_data_tables_09thru18.xlsx",range="In Care on September 30th!A8:K60") %>%
+gather(year,InCare_Sep30,'FY 2009':'FY 2018')
+
+#Numbers of Children Entering Foster Care, by State
+state_entered <- read_excel("data/afcars_state_data_tables_09thru18.xlsx",range="Entered!A8:K60") %>%
+gather(year,Entered,'FY 2009':'FY 2018')
+
+#Numbers of Children Exiting Foster Care, by State
+state_exited <- read_excel("data/afcars_state_data_tables_09thru18.xlsx",range="Exited!A8:K60") %>%
+gather(year,Exited,'FY 2009':'FY 2018')
+
+#Numbers of Children Waiting for Adoption, by State
+state_waitingAdoption <- read_excel("data/afcars_state_data_tables_09thru18.xlsx",range="Waiting for Adoption!A8:K60") %>%
+gather(year,Waiting_Adoption,'FY 2009':'FY 2018')
+
+#Numbers of Children Waiting for Adoption Whose Parental Rights Have Been Terminated, by State
+state_parentalRightsTerminated <- read_excel("data/afcars_state_data_tables_09thru18.xlsx",range="Parental Rights Terminated!A8:K60") %>%
+gather(year,parental_rights_terminated,'FY 2009':'FY 2018')
+
+#Numbers of Children Adopted, by State
+state_adopted <- read_excel("data/afcars_state_data_tables_09thru18.xlsx",range="Adopted!A8:K60") %>%
+gather(year,adopted,'FY 2009':'FY 2018')
+```
+
+## Merge the data for all categories for states
+```{r merge_data}
+merge_cols<-c("State","year")
+#The merge argument only takes two values as input, so you have to do them separately:
+#state_df<- merge(state_served,state_inCare,state_entered,state_exited,state_waitingAdoption,state_parentalRightsTerminated,state_adopted,by=c("State","year"))
+
+state_data<- merge(state_served,state_inCare,by=merge_cols)
+state_data<- merge(state_data,state_entered,by=merge_cols)
+state_data<- merge(state_data,state_exited,by=merge_cols)
+state_data<- merge(state_data,state_waitingAdoption,by=merge_cols)
+state_data<- merge(state_data,state_parentalRightsTerminated,by=merge_cols)
+state_data<- merge(state_data,state_adopted,by=merge_cols)
+```
+
+## CHeck the data
 ```{r}
-state_data_served <- read_excel("data/afcars_state_data_tables_09thru18.xlsx", range = "Served!A8:K60") %>%
-  gather(Year,Served,'FY 2009':'FY 2018')
-head(state_data_served)
+head(state_data)
 ```
 
 ## Read the shape file
-https://socviz.co/maps.html - this one not working
 http://strimas.com/r/tidy-sf/
 ```{r}
-us_states <- st_read("./shp/states_4326.shp")
+us_states <- st_read("./shp/states.shp")
 ```
 
 
@@ -38,21 +84,60 @@ us_states <- st_read("./shp/states_4326.shp")
 as_tibble(us_states)
 ```
 
-## Merge our data for Orphans Served for FY 2009
+## Merge our data for for FY 2009
+### Filter the data for 2009 and rename the state column
 ```{r}
-state_data_served <- state_data_served %>% filter(Year == 'FY 2009') %>% rename(STATE_NAME = State)
-us_states_served_mapped <- inner_join(us_states,state_data_served,by="STATE_NAME")
+state_data_2009 <- state_data %>% filter(year == 'FY 2009') %>% rename(STATE_NAME = State)
+```
+### Merge the data with the coordinates
+```{r}
+us_states_mapped <- inner_join(us_states,state_data_2009,by="STATE_NAME")
 ```
 
 
 ## Plot the Served data for 2009
-```{r}
-library(plotly)
-g <- us_states_served_mapped %>%
+```{r message=FALSE, warning=FALSE}
+g <- us_states_mapped %>%
   ggplot() +
-  geom_sf(aes(fill = Served)) +
+  geom_sf(aes(fill = Served,text = paste0("State: ",STATE_NAME,", Year : ", year))) +
+  # coord_sf(crs = st_crs(102003)) +
   scale_fill_viridis("Served",begin = 0.06,end=0.95,option = "plasma") +
   ggtitle("Orphans Served by each state in 2009") +
   theme_bw()
-ggplotly(g)
+ggplotly(g,tooltip = c("text","fill"))
+```
+
+
+## Plot the Orphans Entered for 2009
+```{r message=FALSE, warning=FALSE}
+g <- us_states_mapped %>%
+  ggplot() +
+  geom_sf(aes(fill = Entered,text = paste0("State: ",STATE_NAME,", Year : ", year))) +
+  scale_fill_distiller("Entered",palette = "YlOrBr") +
+  ggtitle("Orphans Entered by each state in 2009") +
+  theme_minimal() +
+  theme(legend.position = "bottom",
+        axis.text.x=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.x=element_blank(),
+        axis.ticks.y=element_blank(),
+        panel.grid.major = element_blank())
+ggplotly(g,tooltip = c("text","fill"))
+```
+
+## Plot the Orphans Exited for 2009
+```{r message=FALSE, warning=FALSE}
+g <- us_states_mapped %>%
+  ggplot() +
+  geom_sf(aes(fill = Exited,text = paste0("State: ",STATE_NAME,", Year : ", year))) +
+  scale_fill_distiller("Exited",palette = "RdYlGn") +
+  ggtitle("Orphans Exited by each state in 2009") +
+  theme_minimal() +
+  theme(legend.position = "bottom",
+        axis.text.x=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.x=element_blank(),
+        axis.ticks.y=element_blank(),
+        panel.grid.major = element_blank())
+ggplotly(g,tooltip = c("text","fill"))
 ```
