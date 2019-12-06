@@ -146,7 +146,7 @@ leaflet(us_states_mapped) %>%
   addProviderTiles("OpenStreetMap.Mapnik") %>%
   addPolygons(data = us_states_mapped, 
               fillColor = ~pal(Served),
-              fillOpacity = 0.6,       
+              fillOpacity = 0.9,       
               color = "darkgrey",      
               weight = 1.5,            
               popup = popup1)
