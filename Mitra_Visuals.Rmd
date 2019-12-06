@@ -9,28 +9,50 @@ https://www.kaggle.com/new-york-state/nys-children-in-foster-care-annually
 https://www.ncsc.org/Microsites/EveryKid/Home/Data-and-Reform-Efforts/Data-By-State.aspx
 https://www.acf.hhs.gov/cb/resource/trends-in-foster-care-and-adoption
 
+https://github.com/nick-occ/dsba_5122_final_project
 ```{r message=FALSE, warning=FALSE}
 library(readxl)
+library(sf)
+library(tidyverse)
+library(viridis)
+library(rvest)
 ```
 
 ## Read the data
 ```{r}
-state_data_served <- read_excel("data/afcars_state_data_tables_09thru18.xlsx", range = "Served!A8:K60")
+state_data_served <- read_excel("data/afcars_state_data_tables_09thru18.xlsx", range = "Served!A8:K60") %>%
+  gather(Year,Served,'FY 2009':'FY 2018')
 head(state_data_served)
 ```
 
-## Map Plot
-https://socviz.co/maps.html
+## Read the shape file
+https://socviz.co/maps.html - this one not working
+http://strimas.com/r/tidy-sf/
 ```{r}
-library(maps)
-us_states <- map_data("state")
-head(us_states)
+us_states <- st_read("./shp/states_4326.shp")
 ```
 
+
+### Preview as a tibble
 ```{r}
-library(mapproj)
-ggplot(data = us_states, mapping = aes(x = long, y = lat, group = group, fill = region)) +
-  geom_polygon(color = "gray90", size = 0.1) +
-  coord_map(projection = "albers", lat0 = 39, lat1 = 45) +
-  guides(fill=FALSE)
+as_tibble(us_states)
+```
+
+## Merge our data for Orphans Served for FY 2009
+```{r}
+state_data_served <- state_data_served %>% filter(Year == 'FY 2009') %>% rename(STATE_NAME = State)
+us_states_served_mapped <- inner_join(us_states,state_data_served,by="STATE_NAME")
+```
+
+
+## Plot the Served data for 2009
+```{r}
+library(plotly)
+g <- us_states_served_mapped %>%
+  ggplot() +
+  geom_sf(aes(fill = Served)) +
+  scale_fill_viridis("Served",begin = 0.06,end=0.95,option = "plasma") +
+  ggtitle("Orphans Served by each state in 2009") +
+  theme_bw()
+ggplotly(g)
 ```
