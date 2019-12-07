@@ -67,20 +67,62 @@ state_data<- merge(state_data,state_parentalRightsTerminated,by=merge_cols)
 state_data<- merge(state_data,state_adopted,by=merge_cols)
 ```
 
-## Check the data
+## Transfor the year to number in state data
+```{r}
+state_data <- state_data %>% mutate(year = as.numeric(substr(year,3,7)))
+```
+
+## Check the state data
 ```{r}
 head(state_data)
 ```
 
-## Plot Parallel coordinate for State Alabama
+## Check the national data
+```{r}
+nation_data
+```
+
+## Spread the national data
+```{r}
+nation_data <- spread(nation_data,Population,Counts)
+nation_data
+```
+
+## Add a State column and rename the columns to match with state_data
+```{r}
+nation_data['State'] = 'Nation'
+nation_data <- nation_data %>% 
+  rename(year = FY) %>% 
+  rename(InCare_Sep30 = "In Care On Sept 30th") %>%
+  rename(Waiting_Adoption = "Waiting For Adoption") %>%
+  rename(parental_rights_terminated = "Termination Of Parental Rights") %>%
+  rename(adopted = Adopted)
+```
+
+
+## Check the nation data
+```{r}
+nation_data
+```
+
+
+## Bind Nation and State Data
+```{r}
+state_nation_data <- rbind(state_data,nation_data)
+state_nation_data
+```
+
+
+## Plot Parallel coordinate for State Alabama against Nation
 https://plot.ly/r/parallel-coordinates-plot/
 ```{r}
-state_data_Alabama <- state_data %>% filter(State == 'Alabama')
+state_data_Alabama <- state_nation_data %>% filter(State %in% c('Alabama','Nation'))
 
 p <- state_data_Alabama %>%
   plot_ly(type = 'parcoords',
-          line = list(color = ~year),
+          line = list(color = ~year, colorscale = 'Jet'),
           dimensions = list(
+            list(constraintrange = c(2010,2011),label = 'Year', values = ~year),
             list(label = 'Served', values = ~Served),
             list(label = 'In Care as of Sep-30', values = ~InCare_Sep30),
             list(label = 'Entered', values = ~Entered),
