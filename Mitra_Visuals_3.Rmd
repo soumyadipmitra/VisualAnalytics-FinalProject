@@ -72,6 +72,10 @@ state_data<- merge(state_data,state_adopted,by=merge_cols)
 head(state_data)
 ```
 
+```{r}
+write_csv(state_data,"State_Data.csv")
+```
+
 ## Read the shape file
 http://strimas.com/r/tidy-sf/
 ```{r}
@@ -97,19 +101,16 @@ us_states_mapped <- inner_join(us_states,state_data_2009,by="STATE_NAME")
 
 ## Plot the data
 https://plot.ly/r/choropleth-maps/
-
-## check the test dataframe
-```{r}
-df <- read.csv("https://raw.githubusercontent.com/plotly/datasets/master/2011_us_ag_exports.csv")
-head(df)
-```
-
-
-## Plot the data
 Plotly Viridis color pallete - https://www.r-bloggers.com/how-to-use-viridis-colors-with-plotly-and-leaflet/
 ```{r}
 #Set hover text
-us_states_mapped$hover <- with(us_states_mapped,paste(STATE_NAME,'<br>',"Served: ", Served))
+us_states_mapped$hover <- with(us_states_mapped,paste(STATE_NAME,'<br>',"Year: ",year,
+                                    '<br>',"Served: ", Served,", Entered: ", Entered,
+                                    '<br>',"In Case as of Sep 30: ", InCare_Sep30,
+                                    '<br>',"Exited: ", Exited,
+                                    '<br>',"Waiting Adoption: ",Waiting_Adoption,
+                                    '<br>',"Parental Rights Terminated",parental_rights_terminated,
+                                    '<br>',"Adopted: ",adopted))
 # give state boundaries a white border
 l <- list(color = toRGB("white"), width = 2)
 # specify some map projection/options
