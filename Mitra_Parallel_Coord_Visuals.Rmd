@@ -1,0 +1,95 @@
+---
+title: "Visuals"
+author: "Soumyadip"
+date: "11/27/2019"
+output: html_document
+---
+### Data Sources:
+https://www.kaggle.com/new-york-state/nys-children-in-foster-care-annually
+https://www.ncsc.org/Microsites/EveryKid/Home/Data-and-Reform-Efforts/Data-By-State.aspx
+https://www.acf.hhs.gov/cb/resource/trends-in-foster-care-and-adoption
+
+```{r message=FALSE, warning=FALSE}
+library(readxl)
+library(tidyverse)
+library(viridis)
+library(plotly)
+library(sf)
+library(leaflet)
+```
+
+## Read the data
+```{r load-data-transformation}
+#national dataset
+nation_data<-read_excel("data/national_afcars_trends_2009_through_2018.xlsx",sheet="Data")
+
+#State dataset
+#Numbers of Children Served in Foster Care, by State
+state_served <- read_excel("data/afcars_state_data_tables_09thru18.xlsx",range="Served!A8:K60") %>%
+gather(year,Served,'FY 2009':'FY 2018')
+
+#Numbers of Children in Foster Care on September 30th, by State
+state_inCare <- read_excel("data/afcars_state_data_tables_09thru18.xlsx",range="In Care on September 30th!A8:K60") %>%
+gather(year,InCare_Sep30,'FY 2009':'FY 2018')
+
+#Numbers of Children Entering Foster Care, by State
+state_entered <- read_excel("data/afcars_state_data_tables_09thru18.xlsx",range="Entered!A8:K60") %>%
+gather(year,Entered,'FY 2009':'FY 2018')
+
+#Numbers of Children Exiting Foster Care, by State
+state_exited <- read_excel("data/afcars_state_data_tables_09thru18.xlsx",range="Exited!A8:K60") %>%
+gather(year,Exited,'FY 2009':'FY 2018')
+
+#Numbers of Children Waiting for Adoption, by State
+state_waitingAdoption <- read_excel("data/afcars_state_data_tables_09thru18.xlsx",range="Waiting for Adoption!A8:K60") %>%
+gather(year,Waiting_Adoption,'FY 2009':'FY 2018')
+
+#Numbers of Children Waiting for Adoption Whose Parental Rights Have Been Terminated, by State
+state_parentalRightsTerminated <- read_excel("data/afcars_state_data_tables_09thru18.xlsx",range="Parental Rights Terminated!A8:K60") %>%
+gather(year,parental_rights_terminated,'FY 2009':'FY 2018')
+
+#Numbers of Children Adopted, by State
+state_adopted <- read_excel("data/afcars_state_data_tables_09thru18.xlsx",range="Adopted!A8:K60") %>%
+gather(year,adopted,'FY 2009':'FY 2018')
+```
+
+## Merge the data for all categories for states
+```{r merge_data}
+merge_cols<-c("State","year")
+#The merge argument only takes two values as input, so you have to do them separately:
+#state_df<- merge(state_served,state_inCare,state_entered,state_exited,state_waitingAdoption,state_parentalRightsTerminated,state_adopted,by=c("State","year"))
+
+state_data<- merge(state_served,state_inCare,by=merge_cols)
+state_data<- merge(state_data,state_entered,by=merge_cols)
+state_data<- merge(state_data,state_exited,by=merge_cols)
+state_data<- merge(state_data,state_waitingAdoption,by=merge_cols)
+state_data<- merge(state_data,state_parentalRightsTerminated,by=merge_cols)
+state_data<- merge(state_data,state_adopted,by=merge_cols)
+```
+
+## Check the data
+```{r}
+head(state_data)
+```
+
+## Plot Parallel coordinate for State Alabama
+https://plot.ly/r/parallel-coordinates-plot/
+```{r}
+state_data_Alabama <- state_data %>% filter(State == 'Alabama')
+
+p <- state_data_Alabama %>%
+  plot_ly(type = 'parcoords',
+          line = list(color = ~year),
+          dimensions = list(
+            list(label = 'Served', values = ~Served),
+            list(label = 'In Care as of Sep-30', values = ~InCare_Sep30),
+            list(label = 'Entered', values = ~Entered),
+            list(label = 'Exited', values = ~Exited),
+            list(label = 'Waiting Adoption', values = ~Waiting_Adoption),
+            list(label = 'Parental Rights <br> Terminated', values = ~parental_rights_terminated),
+            list(label = 'Adopted', values = ~adopted)
+            )
+          )
+
+p
+```
