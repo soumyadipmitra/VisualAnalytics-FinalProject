@@ -77,15 +77,10 @@ state_data <- state_data %>% mutate(year = as.numeric(substr(year,3,7)))
 head(state_data)
 ```
 
-## Check the national data
-```{r}
-nation_data
-```
-
 ## Spread the national data
 ```{r}
 nation_data <- spread(nation_data,Population,Counts)
-nation_data
+head(nation_data)
 ```
 
 ## Add a State column and rename the columns to match with state_data
@@ -102,14 +97,13 @@ nation_data <- nation_data %>%
 
 ## Check the nation data
 ```{r}
-nation_data
+head(nation_data)
 ```
 
 
 ## Bind Nation and State Data
 ```{r}
 state_nation_data <- rbind(state_data,nation_data)
-state_nation_data
 ```
 
 
@@ -135,3 +129,28 @@ p <- state_data_Alabama %>%
 
 p
 ```
+
+## Plot Parallel coordinate for State Alabama against California
+https://plot.ly/r/parallel-coordinates-plot/
+```{r}
+state_data_Alabama <- state_nation_data %>% filter(State %in% c('Alabama','California'))
+
+p <- state_data_Alabama %>%
+  plot_ly(type = 'parcoords',
+          line = list(color = ~year, colorscale = 'Jet'),
+          dimensions = list(
+            list(constraintrange = c(2010,2011),label = 'Year', values = ~year),
+            list(range=c(10,110000),label = 'Served', values = ~Served),
+            list(range=c(10,70000),label = 'In Care as of Sep-30', values = ~InCare_Sep30),
+            list(range=c(10,40000),label = 'Entered', values = ~Entered),
+            list(range=c(10,40000),label = 'Exited', values = ~Exited),
+            list(range=c(10,20000),label = 'Waiting Adoption', values = ~Waiting_Adoption),
+            list(range=c(10,10000),label = 'Parental Rights Terminated', values = ~parental_rights_terminated),
+            list(range=c(10,10000),label = 'Adopted', values = ~adopted)
+            )
+          )
+
+p
+```
+
+
