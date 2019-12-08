@@ -114,8 +114,9 @@ state_data_Alabama <- state_nation_data %>% filter(State %in% c('Alabama','Natio
 
 p <- state_data_Alabama %>%
   plot_ly(type = 'parcoords',
-          line = list(color = ~year, colorscale = 'Jet'),
+          line = list(color = ~Served, colorscale = 'Jet'),
           dimensions = list(
+            list(range=c(0,3),tickvals=c(0,1,2,3),ticktext=c('','Alabama','Nation',''),label = 'State', values = ~ifelse(State=='Nation',2,1)),
             list(constraintrange = c(2010,2011),label = 'Year', values = ~year),
             list(label = 'Served', values = ~Served),
             list(label = 'In Care as of Sep-30', values = ~InCare_Sep30),
@@ -130,16 +131,27 @@ p <- state_data_Alabama %>%
 p
 ```
 
+
+```{r}
+df <- read.csv("https://raw.githubusercontent.com/bcdunbar/datasets/master/parcoords_data.csv")
+head(df)
+```
+
 ## Plot Parallel coordinate for State Alabama against California
 https://plot.ly/r/parallel-coordinates-plot/
 ```{r}
 state_data_Alabama <- state_nation_data %>% filter(State %in% c('Alabama','California'))
 
 p <- state_data_Alabama %>%
-  plot_ly(type = 'parcoords',
-          line = list(color = ~year, colorscale = 'Jet'),
+  plot_ly() %>%
+  add_trace(type = 'parcoords',
+          line = list(color = ~Served,
+                      colorscale = 'Jet',
+                      showscale = TRUE
+                      ),
           dimensions = list(
-            list(constraintrange = c(2010,2011),label = 'Year', values = ~year),
+            list(range=c(0,3),tickvals=c(0,1,2,3),ticktext=c('','Alabama','California',''),label = 'State', values = ~ifelse(State=='California',2,1)),
+            list(label = 'Year', values = ~year),
             list(range=c(10,110000),label = 'Served', values = ~Served),
             list(range=c(10,70000),label = 'In Care as of Sep-30', values = ~InCare_Sep30),
             list(range=c(10,40000),label = 'Entered', values = ~Entered),
