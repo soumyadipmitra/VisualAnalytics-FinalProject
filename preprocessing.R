@@ -1,55 +1,45 @@
----
-title: "FinalProject-FosterCare_Adoption"
-output: 
-  flexdashboard::flex_dashboard:
-    source_code: embed
-    theme: spacelab
-    social: [ "twitter", "facebook", "menu" ]
----
-```{r include=FALSE}
-library(flexdashboard)
-library(ggplot2)
 library(tidyverse)
 library(tidyr)
 library(readxl)
-```
 
-```{r load-data-transformation}
-#national dataset
-nation_df<-read_excel("data/national_afcars_trends_2009_through_2018.xlsx",sheet="Data")
+
+nation_data <- function() {
+  #national dataset
+  nation_df<-read_excel("data/national_afcars_trends_2009_through_2018.xlsx",sheet="Data")
+  return(nation_df)
+}
+
+state_data <- function() {
 
 #State dataset
 #Numbers of Children Served in Foster Care, by State
 state_served <- read_excel("data/afcars_state_data_tables_09thru18.xlsx",range="Served!A8:K60") %>%
-gather(year,Served,'FY 2009':'FY 2018')
+  gather(year,Served,'FY 2009':'FY 2018')
 
 #Numbers of Children in Foster Care on September 30th, by State
 state_inCare <- read_excel("data/afcars_state_data_tables_09thru18.xlsx",range="In Care on September 30th!A8:K60") %>%
-gather(year,InCare_Sep30,'FY 2009':'FY 2018')
+  gather(year,InCare_Sep30,'FY 2009':'FY 2018')
 
 #Numbers of Children Entering Foster Care, by State
 state_entered <- read_excel("data/afcars_state_data_tables_09thru18.xlsx",range="Entered!A8:K60") %>%
-gather(year,entered,'FY 2009':'FY 2018')
+  gather(year,entered,'FY 2009':'FY 2018')
 
 #Numbers of Children Exiting Foster Care, by State
 state_exited <- read_excel("data/afcars_state_data_tables_09thru18.xlsx",range="Exited!A8:K60") %>%
-gather(year,exited,'FY 2009':'FY 2018')
+  gather(year,exited,'FY 2009':'FY 2018')
 
 #Numbers of Children Waiting for Adoption, by State
 state_waitingAdoption <- read_excel("data/afcars_state_data_tables_09thru18.xlsx",range="Waiting for Adoption!A8:K60") %>%
-gather(year,waiting_Adoption,'FY 2009':'FY 2018')
+  gather(year,waiting_Adoption,'FY 2009':'FY 2018')
 
 #Numbers of Children Waiting for Adoption Whose Parental Rights Have Been Terminated, by State
 state_parentalRightsTerminated <- read_excel("data/afcars_state_data_tables_09thru18.xlsx",range="Parental Rights Terminated!A8:K60") %>%
-gather(year,parental_rights_terminated,'FY 2009':'FY 2018')
+  gather(year,parental_rights_terminated,'FY 2009':'FY 2018')
 
 #Numbers of Children Adopted, by State
 state_adopted <- read_excel("data/afcars_state_data_tables_09thru18.xlsx",range="Adopted!A8:K60") %>%
-gather(year,adopted,'FY 2009':'FY 2018')
-```
+  gather(year,adopted,'FY 2009':'FY 2018')
 
-
-```{r merge_data}
 merge_cols<-c("State","year")
 #The merge argument only takes two values as input, so you have to do them separately:
 #state_df<- merge(state_served,state_inCare,state_entered,state_exited,state_waitingAdoption,state_parentalRightsTerminated,state_adopted,by=c("State","year"))
@@ -60,31 +50,8 @@ state_df<- merge(state_df,state_exited,by=merge_cols)
 state_df<- merge(state_df,state_waitingAdoption,by=merge_cols)
 state_df<- merge(state_df,state_parentalRightsTerminated,by=merge_cols)
 state_df<- merge(state_df,state_adopted,by=merge_cols)
-```
+
+return(state_df)
+}
 
 
-```{r ramyap-viz}
-
-library(ggmap) # for theme_nothing
-
-pie_selectdf<- state_df %>%
-              filter(State=="California" & year=="FY 2010") %>%
-              select(Served,InCare_Sep30,entered,exited,waiting_Adoption,parental_rights_terminated,adopted) %>%
-              gather(indicators,count,'Served':'adopted')
-
-df <- pie_selectdf %>%
-   # factor levels need to be the opposite order of the cumulative sum of the count
-   mutate(Group = factor(indicators, levels = c("Served","InCare_Sep30","entered","exited","waiting_Adoption","parental_rights_terminated","adopted")),
-          cumulative = cumsum(count),
-          midpoint = cumulative - count / 2,
-          #label = paste0(Group, " ", round(count / sum(count) * 100, 1), "%"))
-          label = paste0(round(count / sum(count) * 100, 1), "%"))
-
-ggplot(df, aes(x = 1, weight = count, fill = indicators)) +
-   geom_bar(width = 1, position = "stack") +
-   coord_polar(theta = "y") +
-   #geom_text(aes(x = 1.3, y = midpoint, label = label)) +
-   geom_text(aes(x = 1, y = count, label = label),
-                  position = position_stack(vjust = .6))+
-   theme_void()  
-```
