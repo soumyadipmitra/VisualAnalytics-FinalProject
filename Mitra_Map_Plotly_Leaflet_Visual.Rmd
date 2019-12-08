@@ -65,9 +65,12 @@ state_data<- merge(state_data,state_exited,by=merge_cols)
 state_data<- merge(state_data,state_waitingAdoption,by=merge_cols)
 state_data<- merge(state_data,state_parentalRightsTerminated,by=merge_cols)
 state_data<- merge(state_data,state_adopted,by=merge_cols)
+
+## Transfor the year to number in state data
+state_data <- state_data %>% mutate(year = as.numeric(substr(year,3,7)))
 ```
 
-## CHeck the data
+## Check the data
 ```{r}
 head(state_data)
 ```
@@ -84,10 +87,22 @@ us_states <- st_read("./shp/states.shp")
 as_tibble(us_states)
 ```
 
+### Preview the state_data data
+```{r}
+head(state_data)
+```
+
+### Gather the data
+```{r}
+state_data_gathered <- state_data %>% gather(key="Category",value="Value",-State,-year)
+head(state_data_gathered)
+```
+
 ## Merge our data for for FY 2009
 ### Filter the data for 2009 and rename the state column
 ```{r}
-state_data_2009 <- state_data %>% filter(year == 'FY 2009') %>% rename(STATE_NAME = State)
+state_data_2009 <- state_data %>% gather(key="Category",value="Value",-State,-year) %>% filter(year == 2010 & Category == 'Exited' ) %>% rename(STATE_NAME = State)
+state_data_2009
 ```
 ### Merge the data with the shape file to get the State Codes
 ```{r}
@@ -100,13 +115,7 @@ https://plot.ly/r/choropleth-maps/
 Plotly Viridis color pallete - https://www.r-bloggers.com/how-to-use-viridis-colors-with-plotly-and-leaflet/
 ```{r}
 #Set hover text
-us_states_mapped$hover <- with(us_states_mapped,paste(STATE_NAME,'<br>',"Year: ",year,
-                                    '<br>',"Served: ", Served,", Entered: ", Entered,
-                                    '<br>',"In Case as of Sep 30: ", InCare_Sep30,
-                                    '<br>',"Exited: ", Exited,
-                                    '<br>',"Waiting Adoption: ",Waiting_Adoption,
-                                    '<br>',"Parental Rights Terminated",parental_rights_terminated,
-                                    '<br>',"Adopted: ",adopted))
+us_states_mapped$hover <- with(us_states_mapped,paste(STATE_NAME))
 # give state boundaries a white border
 l <- list(color = toRGB("white"), width = 2)
 # specify some map projection/options
@@ -118,8 +127,8 @@ g <- list(
 )
 plot_geo(us_states_mapped, locationmode = 'USA-states') %>%
   add_trace(
-    z = ~Served, text = ~hover, locations = ~STATE_ABBR,
-    color = ~Served, colors = viridis_pal(option = "D")(3)
+    z = ~Value, text = ~hover, locations = ~STATE_ABBR,
+    color = ~Value, colors = viridis_pal(option = "D")(3)
   ) %>%
   colorbar(title = "Served") %>%
   layout(

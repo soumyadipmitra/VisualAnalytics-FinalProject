@@ -57,4 +57,12 @@ state_df <- state_df %>% mutate(year = as.numeric(substr(year,3,7)))
 return(state_df)
 }
 
+choiceNames <- c("Served" = "Served",
+                 "In Care as of Sep 30" = "InCare_Sep30",
+                 "Entered" = "Entered",
+                 "Exited" = "Exited",
+                 "Waiting for Adoption" = "Waiting_Adoption",
+                 "Parental Rights Terminated" = "parental_rights_terminated",
+                 "Adopted" = "adopted"
+)
 

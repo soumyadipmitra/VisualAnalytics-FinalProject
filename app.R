@@ -60,7 +60,16 @@ ui <- fluidPage(
                      selectInput("state", "State", choices = unique(state_df$State)),
                  ),
                  sliderInput("year", "Year :", min=2009, max=2018, value=2010, 
-                             animate = animationOptions(interval=1000,loop=TRUE)),
+                             animate = animationOptions(interval=1000,loop=TRUE),sep = ""),
+                 selectInput("map_category","Select the Category: ",
+                             choices = c("Served" = "Served",
+                               "In Care as of Sep 30" = "InCare_Sep30",
+                               "Entered" = "Entered",
+                               "Exited" = "Exited",
+                               "Waiting for Adoption" = "Waiting_Adoption",
+                               "Parental Rights Terminated" = "parental_rights_terminated",
+                               "Adopted" = "adopted"
+                             )),
                  # show download only for the data tab
                  conditionalPanel(
                    condition = "input.dataActionTab == 'Data'",
@@ -71,6 +80,7 @@ ui <- fluidPage(
                ),
                mainPanel(tabsetPanel(id="dataActionTab",
                  tabPanel("Map",
+                          textOutput("map_text"),
                           plotlyOutput("map",width = "100%",height="800")
                           ),
                  tabPanel("Plot",
@@ -217,6 +227,11 @@ server <- function(input, output, session) {
   })
   #<< pie-chart-Ends
   
+  ## Map Text
+  output$map_text <- renderText({
+    paste(names(choiceNames)[choiceNames == input$map_category]," in ",input$year)
+  })
+  
   ## Map Plotly Output
   output$map <- renderPlotly({
     ## Read the shape file
@@ -224,7 +239,8 @@ server <- function(input, output, session) {
     
     ### Filter the data for 2009 and rename the state column
     state_data_year <-
-      state_df %>% filter(year == input$year) %>% rename(STATE_NAME = State)
+      state_df %>% gather(key="Category",value="Value",-State,-year) %>% 
+      filter(year == as.numeric(input$year) & Category == as.character(input$map_category) )%>% rename(STATE_NAME = State)
     
     ### Merge the data with the shape file to get the State Codes
     us_states_mapped <-
@@ -244,13 +260,13 @@ server <- function(input, output, session) {
     )
     plot_geo(us_states_mapped, locationmode = 'USA-states') %>%
       add_trace(
-        z = ~ Served,
+        z = ~ Value,
         text = ~ hover,
         locations = ~ STATE_ABBR,
-        color = ~ Served,
+        color = ~ Value,
         colors = viridis_pal(option = "D")(3)
       ) %>%
-      colorbar(title = "Served",x = 0, y = 0.9) %>%
+      colorbar(title = paste(names(choiceNames)[choiceNames == input$map_category]), x = 0, y = 0.9) %>%
       layout(
         font = list(
           color = 'black'),
