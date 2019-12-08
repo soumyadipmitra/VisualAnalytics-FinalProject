@@ -73,7 +73,8 @@ ui <- fluidPage(
                ),
                mainPanel(tabsetPanel(
                  tabPanel("Map",
-                          plotlyOutput("map"),width = "100%",height="600"),
+                          plotlyOutput("map",width = "100%",height="800")
+                          ),
                  tabPanel("Plot",
                           plotOutput("pie_chart")),
                  tabPanel("Data",
