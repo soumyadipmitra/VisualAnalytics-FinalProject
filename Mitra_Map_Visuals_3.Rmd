@@ -72,10 +72,6 @@ state_data<- merge(state_data,state_adopted,by=merge_cols)
 head(state_data)
 ```
 
-```{r}
-write_csv(state_data,"State_Data.csv")
-```
-
 ## Read the shape file
 http://strimas.com/r/tidy-sf/
 ```{r}

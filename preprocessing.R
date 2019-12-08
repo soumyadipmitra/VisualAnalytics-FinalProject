@@ -51,6 +51,9 @@ state_df<- merge(state_df,state_waitingAdoption,by=merge_cols)
 state_df<- merge(state_df,state_parentalRightsTerminated,by=merge_cols)
 state_df<- merge(state_df,state_adopted,by=merge_cols)
 
+## Transfor the year to number in state data
+state_df <- state_df %>% mutate(year = as.numeric(substr(year,3,7)))
+
 return(state_df)
 }
 
