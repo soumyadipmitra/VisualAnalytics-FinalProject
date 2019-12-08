@@ -17,7 +17,8 @@ ui <- fluidPage(
     theme = shinytheme("superhero"),
     tabPanel(
       "Every Kid needs a Family",
-      tags$img(src = "Child_Fostercare_adoption.png"),
+      tags$div(
+        tags$img(src = "Child_Fostercare_adoption.png",height="300px"),style = "text-align:center"),
       h3("Project Objective", style = "text-align:left"),
       tags$div(
         tags$p(
@@ -56,6 +57,32 @@ ui <- fluidPage(
                  h3("Input"),
                  #conditionalPanel(
                  #condition = "input.dataAction == 'Plot' | input.dataAction == 'Data'",
+                 selectInput("state", "State", choices = unique(state_df$State)),
+                 #),
+                 sliderInput("year", "Year :", min=2009, max=2018, value=2010, 
+                             animate = animationOptions(interval=1000,loop=TRUE)),
+                 h4("Description"),
+                 p("TODO"),
+               ),
+               mainPanel(tabsetPanel(
+                 tabPanel("Map",
+                          plotlyOutput("map",width = "100%",height="800")
+                          ),
+                 tabPanel("Plot",
+                          plotOutput("pie_chart")),
+                 tabPanel("Data",
+                          fluidRow(
+                            column(4, tableOutput("nation")),
+                            column(4, tableOutput("state"))
+                          ))
+               ))
+             )),
+    tabPanel("Foster Kids",
+             sidebarLayout(
+               sidebarPanel(
+                 h3("Input"),
+                 #conditionalPanel(
+                 #condition = "input.dataAction == 'Plot' | input.dataAction == 'Data'",
                  selectInput("state", "State", choices = c("All", unique(state_df$State))),
                  #),
                  sliderInput(
@@ -71,17 +98,37 @@ ui <- fluidPage(
                  h4("Description"),
                  p("TODO"),
                ),
-               mainPanel(tabsetPanel(
-                 tabPanel("Map",
-                          plotlyOutput("map",width = "100%",height="800")
-                          ),
-                 tabPanel("Plot",
-                          plotOutput("pie_chart")),
-                 tabPanel("Data",
-                          fluidRow(
-                            column(4, tableOutput("nation")),
-                            column(4, tableOutput("state"))
-                          ))
+               mainPanel(tabsetPanel(id="fosterkidsTab",
+                                     tabPanel("Plot",
+                                              plotOutput("plot")),
+                                     tabPanel("Data",DT::dataTableOutput("state"))
+               ))
+             )),
+    tabPanel("Analysis",
+             sidebarLayout(
+               sidebarPanel(
+                 h3("Input"),
+                 #conditionalPanel(
+                 #condition = "input.dataAction == 'Plot' | input.dataAction == 'Data'",
+                 selectInput("state", "State", choices = c("All", unique(state_df$State))),
+                 #),
+                 sliderInput(
+                   "year",
+                   "Year :",
+                   min = 2009,
+                   max = 2018,
+                   value = 2010,
+                   animate = animationOptions(interval = 4000, loop =
+                                                TRUE),
+                   sep = ""
+                 ),
+                 h4("Description"),
+                 p("TODO"),
+               ),
+               mainPanel(tabsetPanel(id="analysisTab",
+                                     tabPanel("Plot",
+                                              plotOutput("plot")),
+                                     tabPanel("Data",DT::dataTableOutput("state"))
                ))
              )),
     tabPanel(
@@ -136,23 +183,38 @@ ui <- fluidPage(
 
 
 server <- function(input, output, session) {
-  pie_selectdf <- reactive({
-    input_year <- input$year
-    input_year = paste("FY", input_year)
+  pie_selectdf<- reactive({
+    
+    input_year<-input$year
+    input_year=paste("FY",input_year)
     
     state_df %>%
-      filter(State == input$state & year == input_year) %>%
-      select(
-        Served,
-        InCare_Sep30,
-        entered,
-        exited,
-        waiting_Adoption,
-        parental_rights_terminated,
-        adopted
-      ) %>%
-      gather(indicators, count, 'Served':'adopted')
+      filter(State==input$state & year==input_year) %>%
+      select(Served,InCare_Sep30,entered,exited,waiting_Adoption,parental_rights_terminated,adopted) %>%
+      gather(indicators,count,'Served':'adopted')
   })
+  
+  
+  
+  #<< pie-chart-Starts
+  output$pie_chart <- renderPlot({
+    
+    df <- pie_selectdf() %>%
+      # factor levels need to be the opposite order of the cumulative sum of the count
+      mutate(Group = factor(indicators, levels = c("Served","InCare_Sep30","entered","exited","waiting_Adoption","parental_rights_terminated","adopted")),
+             cumulative = cumsum(count),
+             midpoint = cumulative - count / 2,
+             #label = paste0(Group, " ", round(count / sum(count) * 100, 1), "%"))
+             label = paste0(round(count / sum(count) * 100, 1), "%"))
+    
+    
+    ggplot(df,aes(x = 1, weight = count, fill = indicators)) +
+      geom_bar(width = 1, position = "stack") +
+      coord_polar(theta = "y") +
+      geom_text(aes(x = 1, y = count, label = label),position = position_stack(vjust = .6))+
+      theme_void()  
+  })
+  #<< pie-chart-Ends
   
   ## Map Plotly Output
   output$map <- renderPlotly({
@@ -200,41 +262,7 @@ server <- function(input, output, session) {
       layout(paper_bgcolor = 'transparent')
   })
   
-  #<< pie-chart-Starts
-  output$pie_chart <- renderPlot({
-    df <- pie_selectdf() %>%
-      # factor levels need to be the opposite order of the cumulative sum of the count
-      mutate(
-        Group = factor(
-          indicators,
-          levels = c(
-            "Served",
-            "InCare_Sep30",
-            "entered",
-            "exited",
-            "waiting_Adoption",
-            "parental_rights_terminated",
-            "adopted"
-          )
-        ),
-        cumulative = cumsum(count),
-        midpoint = cumulative - count / 2,
-        #label = paste0(Group, " ", round(count / sum(count) * 100, 1), "%"))
-        label = paste0(round(count / sum(count) * 100, 1), "%")
-      )
-    
-    
-    ggplot(df, aes(
-      x = 1,
-      weight = count,
-      fill = indicators
-    )) +
-      geom_bar(width = 1, position = "stack") +
-      coord_polar(theta = "y") +
-      geom_text(aes(x = 1, y = count, label = label), position = position_stack(vjust = .6)) +
-      theme_void()
-  })
-  #<< pie-chart-Ends
+
   
   
 }
