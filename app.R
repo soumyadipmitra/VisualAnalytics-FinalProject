@@ -14,7 +14,7 @@ nation_df = nation_data()
 ui <- fluidPage(
   navbarPage(
     "FosterCare and Adoption",
-    theme = shinytheme("superhero"),
+    theme = shinytheme("cerulean"),
     tabPanel(
       "Every Kid needs a Family",
       tags$div(
@@ -250,14 +250,10 @@ server <- function(input, output, session) {
         color = ~ Served,
         colors = viridis_pal(option = "D")(3)
       ) %>%
-      colorbar(title = "Served") %>%
+      colorbar(title = "Served",x = 0, y = 0.9) %>%
       layout(
-        title = paste('Orphans Served by each state in ',input$year),
-        titlefont = list(
-          color = '#ffffff'),
-        margin = 10,
         font = list(
-          color = '#ffffff'),
+          color = 'black'),
         geo = g) %>%
       layout(plot_bgcolor = 'transparent') %>%
       layout(paper_bgcolor = 'transparent')
