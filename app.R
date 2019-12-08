@@ -12,7 +12,8 @@ nation_df=nation_data()
 ui <- fluidPage(
     navbarPage("FosterCare and Adoption",theme = shinytheme("superhero"),
       tabPanel("Every Kid needs a Family",
-               tags$img(src = "images/Child_Fostercare_adoption.png"),
+               # imageOutput("intro_image"),
+               tags$img(src = "Child_Fostercare_adoption.png"),
                h3("Project Objective",style="text-align:left"),
                tags$div(
                  tags$p("This is a research project for DSBA-5122 at UNC Charlotte.For the project we wanted to explore data related to Foster Care and Adoption System across US.
@@ -102,7 +103,6 @@ ui <- fluidPage(
 
 
 server <- function(input, output, session) {
-  
 
   pie_selectdf<- reactive({
 
