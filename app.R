@@ -20,7 +20,10 @@ state_df = state_data()
 nation_df = nation_data()
 kids_df = kids_data()
 state_nation_df = state_nation_data()
+<<<<<<< HEAD
 
+=======
+>>>>>>> 784ca9f9e5e493a0e0bca7a4f9bc2e115db85949
 
 ui <- tagList(
   navbarPage(
@@ -160,8 +163,13 @@ ui <- tagList(
                ),
                mainPanel(tabsetPanel(id="analysisTab",
                                      tabPanel("Plot",
+<<<<<<< HEAD
                                               plotOutput("timeSeries",height="250px"),
                                               plotOutput("sunburst_chart"))
+=======
+                                              plotOutput("plot2")),
+                                     tabPanel("Data",DT::dataTableOutput("state3"))
+>>>>>>> 784ca9f9e5e493a0e0bca7a4f9bc2e115db85949
                ))
              ),
     tabPanel(
