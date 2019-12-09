@@ -7,13 +7,14 @@ library(viridis)
 library(plotly)
 library(sf)
 library(sunburstR)
-
 library(gganimate)
-
 library(rvest)
-
 library(gifski)
 library(png)
+library(dplyr)
+library(magrittr)
+library(scales)
+
 
 source("preprocessing.R", local = TRUE)
 state_df = state_data()
