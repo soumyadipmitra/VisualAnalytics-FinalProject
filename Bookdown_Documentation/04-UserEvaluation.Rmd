@@ -1,0 +1,55 @@
+# User Evaluation
+
+## Who is the User?
+
+As mentioned in the previous chapter of our report, the application is modeled as a tool for social workers looking for more insight to aid in their research into foster care system. The app is designed so that it includes information for all 50 states. We believe application usage could be expanded to be used by government agencies and different State departments such as Health and Human Services to see what areas need focus when developing adoption action plans. 
+
+## Using the Application
+
+The application is designed so that each section provides insight into different factors of the foster care system and is summarized in the analysis tab. When forming an action plan for the foster care system, one question social workers and public policy officials may have been whether some states have a better serve and adoption rates compared to others. We believe the answer to this question would help them choose how to utilize resources and focus their efforts.
+We believe a typical scenario for a researcher would be to first get preliminary information about the national average of adoption rates and other indicators. Once the national average is obtained, each state could be compared against the average to see where it ranks in the adoption services. For this preliminary information into the foster care system, we provide a high-level view of various indicators across the years. 
+
+Data in Action Tab:
+The map visualization in Data in Action-Map tab would be the next thing the user can load to get an idea of which states have a high number of adoption and other indicators and where they may want to focus their research in the remaining sections of the application.
+The user would then investigate the Data in Action-Plot tab to examine distribution across each state for different foster care categories used and these could aid in their research towards understanding each state wise Foster care statistics. 
+
+```{r echo=FALSE}
+knitr::include_graphics(rep("images/Chap5_Img1.png"))
+```
+
+
+```{r echo=FALSE}
+knitr::include_graphics(rep("images/Chap5_Img2.png"))
+```
+
+
+Foster Kids Tab:
+The two main parts of our research are checking the national average of all indicators across the years and their comparison state wise and measuring the impact of 2 most important indicators – Served and Adoption state wise. To see the breakdown among the different states the user would select the required state from the drop down. The second part that aids in our research is looking at a map of states for indicators. The user would investigate the Foster Kids-Plot tab to find information of states and performance of indicators either adopted or served adopted across different years. A bar chart shows the performance of these 2 indicators across years for top 10 states. Also, the performance of any 2 states can be compared through a parallel coordinates graph.
+
+```{r echo=FALSE}
+knitr::include_graphics(rep("images/Chap5_Img3.png"))
+```
+
+```{r echo=FALSE}
+knitr::include_graphics(rep("images/Chap5_Img4.png"))
+```
+
+
+Analysis Tab:
+Lastly, the analysis tab is what puts it all together with a time series plot and the user has the option to see the national view of various indicators across years. The second visualization is a sunburst chart that takes Foster Care kids distribution by Age Group across the top 10 states (wrt count of kids in the given age bracket) of United States and shows how they compare to one another. This not only allows the researcher to find patterns about which age groups are high and where to focus research, but also how the different foster care categories are changing over time.
+
+```{r echo=FALSE}
+knitr::include_graphics(rep("images/Chap5_Img5.png"))
+```
+
+```{r echo=FALSE}
+knitr::include_graphics(rep("images/Chap5_Img6.png"))
+```
+
+Social Media Tab:
+This section focuses on analyzing public opinion about Foster Care and Adoption. Data has been collected from social media (example: Twitter) and we are utilizing Sentiment Analysis on user reviews and attempt to comprehend what is public's general response to Foster Care and Adoption.
+The user has the ability to upload an input file that contains public tweets and generate word cloud. The most commonly used words can be found the prominence in size and color in the cloud.
+
+```{r echo=FALSE}
+knitr::include_graphics(rep("images/Chap5_Img7.jpeg"))
+```

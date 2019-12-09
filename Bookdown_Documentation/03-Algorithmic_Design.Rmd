@@ -1,0 +1,12 @@
+# Algorithmic Design
+
+## Design
+
+We organized the code so that the Shiny application and logic are in separate files. This serves two purposes. First, the code is easier to work with, because it is easier to find functions that are being called by the application. Second, all the code does not have to be executed in the server portion of the Shiny application when the application loads; instead, functions are called when the user runs certain interactions in the interface and only returns a subset of the data based on what they select.
+To link the user interaction with the visual design, we used reactivity to ensure when the user makes changes to different parts of the interface the visualization changes to reflect the selection. This improves the efficiency of the design, because when you define your reactive variables correctly, no extra code is required to be written to keep track of all the events that can change the interface.
+
+## Performance
+
+Validation is about whether one has built the right product, and verification is about whether one has built the product right. The innermost level is to create an algorithm to carry out the visual encoding and interaction design effectively. The performance of the system is significant component of the accessibility and the usability. Coding and design of the system have created considering the performance of the application. Tidiness and neatness of data coding effects the system performance and reproducibility. 
+To assess if our design was meeting an acceptable performance, we had to deploy our app to shinyapps.io throughout the process of developing the app. We did this because running the application locally was much faster than when hosted it through the shiny apps service, which is our production environment at this time, so we wanted to make sure that when big changes were made, performance wasn’t impacted. 
+Certain visualizations loaded more quickly than others, and different visualizations can be generated based on selection criteria, such as state, year and indicator. One thing we used to improve performance was creation of a separate preprocessing file in order to save the results in memory. By doing this in our subsequent analysis, we just had to call the preprocessing file and use the result of it in further plots.
