@@ -81,7 +81,7 @@ ui <- fluidPage(
                  sliderInput("year", "Year :", min=2009, max=2018, value=2010, 
                              animate = animationOptions(interval=1000,loop=TRUE),sep = ""),
                  conditionalPanel(
-                   condition = "input.dataActionTab == 'National Comparison'",
+                   condition = "input.dataActionTab == 'National Distribution'",
                  selectInput("map_category","Select the Category: ",
                              choices = c("Served" = "Served",
                                "In Care as of Sep 30" = "InCare_Sep30",
@@ -112,17 +112,17 @@ ui <- fluidPage(
                  width = 3
                ),
                mainPanel(tabsetPanel(id="dataActionTab",
-                 tabPanel("National Comparison",
+                 tabPanel("Data",
+                          DT::dataTableOutput("nation"),
+                          DT::dataTableOutput("state")),
+                 tabPanel("National Distribution",
                           h3(textOutput("map_text"), style = "text-align:center;font-weight:bold"),
                           # textOutput("map_text"),
                           plotlyOutput("map",width = "100%",height="800")
                           ),
                  tabPanel("Category Breakdowns",
                           h3(textOutput("pie_text"), style = "text-align:center;font-weight:bold"),
-                          plotlyOutput("pie_chart"),width="100%",height="800"),
-                 tabPanel("Data",
-                          DT::dataTableOutput("nation"),
-                          DT::dataTableOutput("state"))
+                          plotlyOutput("pie_chart"),width="100%",height="800")
                ))
              ),
     tabPanel("Foster Kids",
