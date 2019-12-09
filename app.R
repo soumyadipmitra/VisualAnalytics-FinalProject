@@ -204,7 +204,7 @@ server <- function(input, output, session) {
     
       state_df %>%
       filter(State==input$state & year==input$year) %>%
-      select(Served,InCare_Sep30,entered,exited,waiting_Adoption,parental_rights_terminated,adopted) %>%
+      select(Served,InCare_Sep30,Entered,Exited,Waiting_Adoption,parental_rights_terminated,adopted) %>%
       gather(indicators,count,'Served':'adopted')
   })
   
@@ -214,7 +214,7 @@ server <- function(input, output, session) {
     
     df <- pie_selectdf() %>%
       # factor levels need to be the opposite order of the cumulative sum of the count
-      mutate(Group = factor(indicators, levels = c("Served","InCare_Sep30","entered","exited","waiting_Adoption","parental_rights_terminated","adopted")),
+      mutate(Group = factor(indicators, levels = c("Served","InCare_Sep30","Entered","Exited","Waiting_Adoption","parental_rights_terminated","adopted")),
              cumulative = cumsum(count),
              midpoint = cumulative - count / 2,
              #label = paste0(Group, " ", round(count / sum(count) * 100, 1), "%"))
@@ -226,6 +226,7 @@ server <- function(input, output, session) {
       coord_polar(theta = "y") +
       geom_text(aes(x = 1, y = count, label = label),position = position_stack(vjust = .6))+
       theme_void()  
+
   })
   #<< pie-chart-Ends
   

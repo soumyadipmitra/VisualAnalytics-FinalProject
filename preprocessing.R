@@ -22,15 +22,15 @@ state_inCare <- read_excel("data/afcars_state_data_tables_09thru18.xlsx",range="
 
 #Numbers of Children Entering Foster Care, by State
 state_entered <- read_excel("data/afcars_state_data_tables_09thru18.xlsx",range="Entered!A8:K60") %>%
-  gather(year,entered,'FY 2009':'FY 2018')
+  gather(year,Entered,'FY 2009':'FY 2018')
 
 #Numbers of Children Exiting Foster Care, by State
 state_exited <- read_excel("data/afcars_state_data_tables_09thru18.xlsx",range="Exited!A8:K60") %>%
-  gather(year,exited,'FY 2009':'FY 2018')
+  gather(year,Exited,'FY 2009':'FY 2018')
 
 #Numbers of Children Waiting for Adoption, by State
 state_waitingAdoption <- read_excel("data/afcars_state_data_tables_09thru18.xlsx",range="Waiting for Adoption!A8:K60") %>%
-  gather(year,waiting_Adoption,'FY 2009':'FY 2018')
+  gather(year,Waiting_Adoption,'FY 2009':'FY 2018')
 
 #Numbers of Children Waiting for Adoption Whose Parental Rights Have Been Terminated, by State
 state_parentalRightsTerminated <- read_excel("data/afcars_state_data_tables_09thru18.xlsx",range="Parental Rights Terminated!A8:K60") %>%
