@@ -12,7 +12,7 @@ state_df = state_data()
 nation_df = nation_data()
 state_nation_df = state_nation_data()
 
-ui <- fluidPage(
+ui <- tagList(
   navbarPage(
     "FosterCare and Adoption",
     theme = shinytheme("cerulean"),
@@ -53,7 +53,6 @@ ui <- fluidPage(
       br(),
     ),
     tabPanel("Data in Action",
-             sidebarLayout(
                sidebarPanel(
                  h3("Input"),
                  conditionalPanel(
@@ -78,6 +77,7 @@ ui <- fluidPage(
                  ),
                  h4("Description"),
                  p("TODO"),
+                 width = 3
                ),
                mainPanel(tabsetPanel(id="dataActionTab",
                  tabPanel("Map",
@@ -92,15 +92,23 @@ ui <- fluidPage(
                             column(4, tableOutput("state"))
                           ))
                ))
-             )),
+             ),
     tabPanel("Foster Kids",
-             sidebarLayout(
                sidebarPanel(
                  h3("Input"),
                  #conditionalPanel(
                  #condition = "input.dataAction == 'Plot' | input.dataAction == 'Data'",
+                 radioButtons("category","Select the Category: ",
+                             choices = c("Served" = "Served",
+                                         "Adopted" = "adopted"
+                             ),
+                             selected = "Served",
+                             inline = TRUE),
+                 sliderInput("year2", "Year :", min=2009, max=2018, value=2010, 
+                             animate = animationOptions(interval=1000,loop=TRUE),sep = ""),
                  selectInput("state1", "Select a State or Nation:", choices =  unique(sort(state_nation_df$State))),
                  selectInput("state2", "Select Another State to Compare:", choices =  unique(sort(state_df$State)),selected = 'California'),
+                 
                  #),
                  sliderInput(
                    "year1",
@@ -114,15 +122,16 @@ ui <- fluidPage(
                  ),
                  h4("Description"),
                  p("TODO"),
+                 width = 3
                ),
                mainPanel(tabsetPanel(id="fosterkidsTab",
                                      tabPanel("Plot",
+                                              plotOutput("top_ten_countries",height="250px"),
                                               plotlyOutput("parl_coord_plot")),
                                      tabPanel("Data",DT::dataTableOutput("State1"))
                ))
-             )),
+             ),
     tabPanel("Analysis",
-             sidebarLayout(
                sidebarPanel(
                  h3("Input"),
                  #conditionalPanel(
@@ -141,13 +150,14 @@ ui <- fluidPage(
                  ),
                  h4("Description"),
                  p("TODO"),
+                 width = 3
                ),
                mainPanel(tabsetPanel(id="analysisTab",
                                      tabPanel("Plot",
                                               plotOutput("plot2")),
-                                     tabPanel("Data",DT::dataTableOutput("state2"))
+                                     tabPanel("Data",DT::dataTableOutput("state3"))
                ))
-             )),
+             ),
     tabPanel(
       "References",
       h3("Code Repository at Github", style = "text-align:left"),
@@ -240,7 +250,7 @@ server <- function(input, output, session) {
     ## Read the shape file
     us_states <- st_read("./shp/states.shp")
     
-    ### Filter the data for 2009 and rename the state column
+    ### Filter the data for the year & category and rename the state column
     state_data_year <-
       state_df %>% gather(key="Category",value="Value",-State,-year) %>% 
       filter(year == as.numeric(input$year) & Category == as.character(input$map_category) )%>% rename(STATE_NAME = State)
@@ -278,6 +288,35 @@ server <- function(input, output, session) {
       layout(paper_bgcolor = 'transparent')
   })
   
+  
+  
+  ## Horizontal bars for top 10 countries in Category
+  output$top_ten_countries <- renderPlot({
+    ### Filter the data for the year & category and rename the state column
+    top_10_state_category_year <-
+      state_df %>% gather(key="Category",value="Value",-State,-year) %>% 
+      filter(year == as.numeric(input$year2) & Category == as.character(input$category)) %>%
+      arrange(desc(Value)) %>% head(10)
+    
+    top_10_state_category_year %>% 
+      ggplot() +
+      geom_col(aes(x=reorder(State,Value),y=Value,fill=Value)) +
+      coord_flip() +
+      scale_fill_viridis(option = "C") +
+      theme_minimal() +
+      theme(legend.position = "none",
+            axis.text.x=element_blank(),
+            # axis.text.y=element_blank(),
+            axis.ticks.x=element_blank(),
+            # axis.ticks.y=element_blank(),
+            panel.grid.major = element_blank()) +
+      labs(x="",y="")
+    
+  })
+  
+  
+  
+  ## Parallel Coordinate Plot
   output$parl_coord_plot <- renderPlotly({
     
     state_data_filtered <- state_nation_df %>% filter(State %in% c(input$state1,input$state2))
