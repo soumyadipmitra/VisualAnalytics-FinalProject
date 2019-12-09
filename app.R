@@ -17,6 +17,7 @@ library(scales)
 
 
 source("preprocessing.R", local = TRUE)
+
 state_df = state_data()
 nation_df = nation_data()
 kids_df = kids_data()
