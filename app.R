@@ -115,8 +115,7 @@ ui <- tagList(
     tabPanel("Foster Kids",
                sidebarPanel(
                  h3("Input"),
-                 #conditionalPanel(
-                 #condition = "input.dataAction == 'Plot' | input.dataAction == 'Data'",
+                 
                  radioButtons("category","Select the Category: ",
                              choices = c("Served" = "Served",
                                          "Adopted" = "adopted"
@@ -125,10 +124,11 @@ ui <- tagList(
                              inline = TRUE),
                  sliderInput("year2", "Year :", min=2009, max=2018, value=2010, 
                              animate = animationOptions(interval=1000,loop=TRUE),sep = ""),
+                 conditionalPanel(
+                 condition = "input.fosterkidsTab == 'Plot'",
                  selectInput("state1", "Select a State or Nation:", choices =  unique(sort(state_nation_df$State))),
-                 selectInput("state2", "Select Another State to Compare:", choices =  unique(sort(state_df$State)),selected = 'California'),
-                 
-                 #),
+                 selectInput("state2", "Select Another State to Compare:", choices =  unique(sort(state_df$State)),selected = 'California')
+                 ),
                  h4("Description"),
                  p("TODO"),
                  width = 3
@@ -137,7 +137,7 @@ ui <- tagList(
                                      tabPanel("Plot",
                                               plotOutput("top_ten_countries",height="250px"),
                                               plotlyOutput("parl_coord_plot")),
-                                     tabPanel("Data",DT::dataTableOutput("State1"))
+                                     tabPanel("Data",DT::dataTableOutput("top_ten_countries_data"))
                ))
              ),
     tabPanel("Analysis",
@@ -213,7 +213,7 @@ ui <- tagList(
         h3("Created By:"),
         h5("- SoumyaDip Mitra"),
         h5("- Shruti Agarwal"),
-        h5("- Ramya prakash")
+        h5("- Ramya Prakash")
         ,
         style = "text-align:center"
       )
@@ -376,17 +376,19 @@ server <- function(input, output, session) {
       layout(paper_bgcolor = 'transparent')
   })
   
-  
+  top_10_state_category_year<- reactive({
+  ### Filter the data for the year & category and rename the state column
+  top_10_state_category_year <-
+    state_df %>% gather(key="Category",value="Value",-State,-year) %>% 
+    filter(year == as.numeric(input$year2) & Category == as.character(input$category)) %>%
+    arrange(desc(Value)) %>% head(10)
+  })
   
   ## Horizontal bars for top 10 countries in Category
   output$top_ten_countries <- renderPlot({
-    ### Filter the data for the year & category and rename the state column
-    top_10_state_category_year <-
-      state_df %>% gather(key="Category",value="Value",-State,-year) %>% 
-      filter(year == as.numeric(input$year2) & Category == as.character(input$category)) %>%
-      arrange(desc(Value)) %>% head(10)
+
     
-    top_10_state_category_year %>% 
+    top_10_state_category_year() %>% 
       ggplot() +
       geom_col(aes(x=reorder(State,Value),y=Value,fill=Value)) +
       coord_flip() +
@@ -401,6 +403,8 @@ server <- function(input, output, session) {
       labs(x="",y="")
     
   })
+  
+  output$top_ten_countries_data <- DT::renderDataTable(DT::datatable(top_10_state_category_year()))
   
   
   
