@@ -134,3 +134,9 @@ state_nation_data <- function() {
   return(state_nation_data)
 }
 
+
+category_definition <- function() {
+  #national dataset
+  category_df<-read_excel("data/afcars_state_data_tables_09thru18.xlsx",range="Definitions!A1:B8")
+  return(category_df)
+}
