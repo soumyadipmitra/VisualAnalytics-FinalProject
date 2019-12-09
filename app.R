@@ -119,7 +119,7 @@ ui <- fluidPage(
                           ),
                  tabPanel("Plot",
                           h3(textOutput("pie_text"), style = "text-align:center;font-weight:bold"),
-                          plotOutput("pie_chart")),
+                          plotlyOutput("pie_chart"),width="100%",height="800"),
                  tabPanel("Data",
                           DT::dataTableOutput("nation"),
                           DT::dataTableOutput("state"))
@@ -299,7 +299,7 @@ server <- function(input, output, session) {
   })
   
   #<< pie-chart-Starts
-  output$pie_chart <- renderPlot({
+  output$pie_chart <- renderPlotly({
     
     df <- pie_selectdf() %>%
       # factor levels need to be the opposite order of the cumulative sum of the count
@@ -310,12 +310,16 @@ server <- function(input, output, session) {
              label = paste0(round(count / sum(count) * 100, 1), "%"))
     
     
-    ggplot(df,aes(x = 1, weight = count, fill = indicators)) +
-      geom_bar(width = 1, position = "stack") +
-      coord_polar(theta = "y") +
-      scale_fill_viridis(discrete = TRUE,name="Quartiles") +
-      geom_text(aes(x = 1, y = count, label = label),position = position_stack(vjust = .6),check_overlap = TRUE,color='white')+
-      theme_void()  
+    # ggplot(df,aes(x = 1, weight = count, fill = indicators)) +
+    #   geom_bar(width = 1, position = "stack") +
+    #   coord_polar(theta = "y") +
+    #   scale_fill_viridis(discrete = TRUE,name="Quartiles") +
+    #   geom_text(aes(x = 1, y = count, label = label),position = position_stack(vjust = .6),check_overlap = TRUE,color='white')+
+    #   theme_void()  
+    
+    plot_ly(df, labels = ~Group, values = ~count, type = 'pie') %>%
+      layout(xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
+             yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE))
 
   })
   #<< pie-chart-Ends
