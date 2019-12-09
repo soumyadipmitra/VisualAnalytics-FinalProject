@@ -14,11 +14,10 @@ This data would allow the social worker to see the distribution of different fos
 
 ## Source Data
 Our source data is available at:
-
-National DataSet [https://www.acf.hhs.gov/sites/default/files/cb/national_afcars_trends_2009_through_2018.xlsx]
-State Level DataSet [https://www.acf.hhs.gov/sites/default/files/cb/afcars_state_data_tables_09thru18.xlsx]
-FosterKids Data by Age Group [https://datacenter.kidscount.org/data/tables/101-child-population-by-age-group]
-Twitter [https://twitter.com]
+- National DataSet [https://www.acf.hhs.gov/sites/default/files/cb/national_afcars_trends_2009_through_2018.xlsx] 
+- State Level DataSet [https://www.acf.hhs.gov/sites/default/files/cb/afcars_state_data_tables_09thru18.xlsx]
+- FosterKids Data by Age Group [https://datacenter.kidscount.org/data/tables/101-child-population-by-age-group]
+- Twitter [https://twitter.com]
 
 ## Collaborators (Group Members):
 - SoumyaDip Mitra
