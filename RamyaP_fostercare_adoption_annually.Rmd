@@ -88,3 +88,115 @@ ggplot(df, aes(x = 1, weight = count, fill = indicators)) +
                   position = position_stack(vjust = .6))+
    theme_void()  
 ```
+
+```{r ramyap-viz}
+library(ggplot2)
+library(dplyr)
+library(magrittr)
+library(scales)
+
+
+kids = read_excel('data/Child population by age group.xlsx')
+```
+
+```{r ramyap-viz}
+
+kids_df<-kids %>%
+         filter(LocationType=="State",TimeFrame==2010,DataFormat=="Number",AgeGroup=="0 to 4")
+
+
+kids_df$Data <- type.convert(kids_df$Data)
+
+
+sum_total_pop = sum(kids_df$Data)
+
+firstLevel = kids_df %>% summarize(total_pop=sum(kids_df$Data))
+
+sunburst_0 = ggplot(firstLevel)
+sunburst_1 = sunburst_0 + 
+  geom_bar(data=firstLevel, aes(x=1, y=total_pop), fill='darkgrey', stat='identity') +
+  geom_text(aes(x=1, y=sum_total_pop/2, label=paste('Foster kids distribution in 2010', comma(total_pop))), color='white')
+  
+sunburst_1  + coord_polar('y')
+
+loc_pop = kids_df %>% 
+   group_by(Location) %>% 
+   summarise(total_pop=sum(Data)) %>% 
+   arrange(desc(total_pop))
+
+
+
+```
+```{r ramyap-viz}
+compute_angle = function(perc){
+  angle = -1
+  #if(perc < 0.25) # 1st q [90,0]
+    #angle = 90 - (perc/0.25) * 90
+  #else if(perc < 0.5) # 2nd quarter [0, -90]
+    #angle = (perc-0.25) / 0.25 * -90
+  #else if(perc < 0.75) # 3rd q [90, 0]
+    #angle = 90 - ((perc-0.5) / 0.25 * 90)
+  #else if(perc < 1.00) # last q [0, -90]
+    #angle = ((perc -0.75)/0.25) * -90
+
+  if(perc < 0.5) {# 1st half [90, -90]
+    angle = (180 - (perc/0.5) * 180) - 90
+  }
+  else{ # 2nd half [90, -90]
+    angle = (90 - ((perc - 0.5)/0.5) * 180)
+  }
+
+
+  return(angle)
+}
+
+
+secondLevel = loc_pop %>%
+  mutate(running=cumsum(total_pop), pos=running - total_pop/2)
+
+print(secondLevel)
+secondLevel = secondLevel %>% group_by(1:n())
+
+secondLevel<-secondLevel[!is.na(secondLevel$running) & !is.na(secondLevel$pos),]
+
+
+secondLevel = secondLevel %>%
+  mutate(angle=compute_angle((running - total_pop/2) / sum_total_pop))
+
+secondLevel= secondLevel %>%
+             top_n(10)
+
+```
+```{r ramyap-viz}
+secondLevel=secondLevel[1:10,]
+```
+
+```{r ramyap-viz}
+sunburst_2 = sunburst_1 + geom_bar(data=secondLevel,
+                                   aes(x=2, y=total_pop, fill=total_pop, stroke=3),
+                                   color='white', position='stack', stat='identity')
+
+```
+```{r ramyap-viz}
+sunburst_3 = sunburst_2 + geom_text(data=secondLevel, aes(label=paste(Location, comma(total_pop)), x=2, y=pos, angle=angle))
+sunburst_3 + scale_y_continuous(labels=comma) + scale_fill_continuous(low='white', high='blue') + coord_polar('y') + theme_minimal()
+```
+
+```{r ramyap-viz}
+devtools::install_github("timelyportfolio/sunburstR")
+
+```
+```{r ramyap-viz}
+#devtools::install_github("timelyportfolio/sunburstR")
+
+library(sunburstR)
+# read in sample visit-sequences.csv data provided in source
+# https://gist.github.com/kerryrodden/7090426#file-visit-sequences-csv
+
+sunburst(read.csv(
+  system.file("data/Child population by age group.csv")
+  ,header=T
+  ,stringsAsFactors = FALSE
+))
+
+```

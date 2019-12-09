@@ -6,10 +6,12 @@ library(vroom)
 library(viridis)
 library(plotly)
 library(sf)
+library(sunburstR)
 
 source("preprocessing.R", local = TRUE)
 state_df = state_data()
 nation_df = nation_data()
+kids_df = kids_data()
 
 ui <- fluidPage(
   navbarPage(
@@ -125,7 +127,12 @@ ui <- fluidPage(
                  h3("Input"),
                  #conditionalPanel(
                  #condition = "input.dataAction == 'Plot' | input.dataAction == 'Data'",
-                 selectInput("state2", "State", choices = unique(state_df$State)),
+                 #selectInput("ageGroup", "AgeGroup", choices = unique(state_df$State)),
+                 radioButtons("ageGroup", "Choose One:",
+                              c("0 to 4" = "0 to 4",
+                                "5 to 11" = "5 to 11",
+                                "12 to 14" = "12 to 14",
+                                "15 to 17" = "15 to 17")),
                  #),
                  sliderInput(
                    "year2",
@@ -133,7 +140,7 @@ ui <- fluidPage(
                    min = 2009,
                    max = 2018,
                    value = 2010,
-                   animate = animationOptions(interval = 4000, loop =
+                   animate = animationOptions(interval = 1000, loop =
                                                 TRUE),
                    sep = ""
                  ),
@@ -142,8 +149,7 @@ ui <- fluidPage(
                ),
                mainPanel(tabsetPanel(id="analysisTab",
                                      tabPanel("Plot",
-                                              plotOutput("plot2")),
-                                     tabPanel("Data",DT::dataTableOutput("state2"))
+                                              plotOutput("plot2"))
                ))
              )),
     tabPanel(
@@ -227,6 +233,78 @@ server <- function(input, output, session) {
   })
   #<< pie-chart-Ends
   
+  kids_selectdf<- reactive({
+    kids_df<-kids %>%
+      filter(LocationType=="State",TimeFrame==input$year2,DataFormat=="Number",AgeGroup==input$ageGroup)
+    
+  })
+  
+ 
+  output$plot2 <- renderPlot({
+    
+    kids_df<-kids_selectdf()
+    kids_df$Data <- type.convert(kids_df$Data)
+    sum_total_pop = sum(kids_df$Data)
+    
+    firstLevel = kids_df %>% summarize(total_pop=sum(kids_df$Data))
+    
+    sunburst_0 = ggplot(firstLevel)
+    sunburst_1 = sunburst_0 + 
+      geom_bar(data=firstLevel, aes(x=1, y=total_pop), fill='darkgrey', stat='identity') +
+      geom_text(aes(x=1, y=sum_total_pop/2, label=paste('Foster kids: ', comma(total_pop))), color='white')
+    
+    sunburst_1  + coord_polar('y')
+    
+    loc_pop = kids_df %>% 
+      group_by(Location) %>% 
+      summarise(total_pop=sum(Data)) %>% 
+      arrange(desc(total_pop))
+    
+    compute_angle = function(perc){
+      angle = -1
+      #if(perc < 0.25) # 1st q [90,0]
+      #angle = 90 - (perc/0.25) * 90
+      #else if(perc < 0.5) # 2nd quarter [0, -90]
+      #angle = (perc-0.25) / 0.25 * -90
+      #else if(perc < 0.75) # 3rd q [90, 0]
+      #angle = 90 - ((perc-0.5) / 0.25 * 90)
+      #else if(perc < 1.00) # last q [0, -90]
+      #angle = ((perc -0.75)/0.25) * -90
+      
+      if(perc < 0.5) {# 1st half [90, -90]
+        angle = (180 - (perc/0.5) * 180) - 90
+      }
+      else{ # 2nd half [90, -90]
+        angle = (90 - ((perc - 0.5)/0.5) * 180)
+      }
+      
+      
+      return(angle)
+    }
+    
+    
+    secondLevel = loc_pop %>%
+      mutate(running=cumsum(total_pop), pos=running - total_pop/2)
+    
+    secondLevel = secondLevel %>% group_by(1:n())
+    
+    secondLevel<-secondLevel[!is.na(secondLevel$running) & !is.na(secondLevel$pos),]
+    
+    
+    secondLevel = secondLevel %>%
+      mutate(angle=compute_angle((running - total_pop/2) / sum_total_pop))
+    
+    secondLevel=secondLevel[1:10,]
+    
+    sunburst_2 = sunburst_1 + geom_bar(data=secondLevel,
+                                       aes(x=2, y=total_pop, fill=total_pop, stroke=3),
+                                       color='white', position='stack', stat='identity')
+    
+    sunburst_3 = sunburst_2 + geom_text(data=secondLevel, aes(label=paste(Location, comma(total_pop)), x=2, y=pos, angle=angle))
+    sunburst_3 + scale_y_continuous(labels=comma) + scale_fill_continuous(low='white', high='blue') + coord_polar('y') + theme_minimal()
+ 
+
+  })
   ## Map Text
   output$map_text <- renderText({
     paste(names(choiceNames)[choiceNames == input$map_category]," in ",input$year)
