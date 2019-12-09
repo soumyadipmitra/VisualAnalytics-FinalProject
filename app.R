@@ -11,9 +11,13 @@ library(sunburstR)
 source("preprocessing.R", local = TRUE)
 state_df = state_data()
 nation_df = nation_data()
+<<<<<<< HEAD
 kids_df = kids_data()
+=======
+state_nation_df = state_nation_data()
+>>>>>>> fd8d45737949f40fa850bb6f89daf8a12e4deead
 
-ui <- fluidPage(
+ui <- tagList(
   navbarPage(
     "FosterCare and Adoption",
     theme = shinytheme("cerulean"),
@@ -54,7 +58,6 @@ ui <- fluidPage(
       br(),
     ),
     tabPanel("Data in Action",
-             sidebarLayout(
                sidebarPanel(
                  h3("Input"),
                  conditionalPanel(
@@ -79,6 +82,7 @@ ui <- fluidPage(
                  ),
                  h4("Description"),
                  p("TODO"),
+                 width = 3
                ),
                mainPanel(tabsetPanel(id="dataActionTab",
                  tabPanel("Map",
@@ -93,46 +97,50 @@ ui <- fluidPage(
                             column(4, tableOutput("state"))
                           ))
                ))
-             )),
+             ),
     tabPanel("Foster Kids",
-             sidebarLayout(
                sidebarPanel(
                  h3("Input"),
                  #conditionalPanel(
                  #condition = "input.dataAction == 'Plot' | input.dataAction == 'Data'",
-                 selectInput("state1", "State", choices =  unique(state_df$State)),
+                 radioButtons("category","Select the Category: ",
+                             choices = c("Served" = "Served",
+                                         "Adopted" = "adopted"
+                             ),
+                             selected = "Served",
+                             inline = TRUE),
+                 sliderInput("year2", "Year :", min=2009, max=2018, value=2010, 
+                             animate = animationOptions(interval=1000,loop=TRUE),sep = ""),
+                 selectInput("state1", "Select a State or Nation:", choices =  unique(sort(state_nation_df$State))),
+                 selectInput("state2", "Select Another State to Compare:", choices =  unique(sort(state_df$State)),selected = 'California'),
+                 
                  #),
-                 sliderInput(
-                   "year1",
-                   "Year :",
-                   min = 2009,
-                   max = 2018,
-                   value = 2010,
-                   animate = animationOptions(interval = 4000, loop =
-                                                TRUE),
-                   sep = ""
-                 ),
                  h4("Description"),
                  p("TODO"),
+                 width = 3
                ),
                mainPanel(tabsetPanel(id="fosterkidsTab",
                                      tabPanel("Plot",
-                                              plotOutput("plot1")),
+                                              plotOutput("top_ten_countries",height="250px"),
+                                              plotlyOutput("parl_coord_plot")),
                                      tabPanel("Data",DT::dataTableOutput("State1"))
                ))
-             )),
+             ),
     tabPanel("Analysis",
-             sidebarLayout(
                sidebarPanel(
                  h3("Input"),
                  #conditionalPanel(
                  #condition = "input.dataAction == 'Plot' | input.dataAction == 'Data'",
+<<<<<<< HEAD
                  #selectInput("ageGroup", "AgeGroup", choices = unique(state_df$State)),
                  radioButtons("ageGroup", "Choose One:",
                               c("0 to 4" = "0 to 4",
                                 "5 to 11" = "5 to 11",
                                 "12 to 14" = "12 to 14",
                                 "15 to 17" = "15 to 17")),
+=======
+                 selectInput("state3", "State", choices = unique(state_df$State)),
+>>>>>>> fd8d45737949f40fa850bb6f89daf8a12e4deead
                  #),
                  sliderInput(
                    "year2",
@@ -146,12 +154,18 @@ ui <- fluidPage(
                  ),
                  h4("Description"),
                  p("TODO"),
+                 width = 3
                ),
                mainPanel(tabsetPanel(id="analysisTab",
                                      tabPanel("Plot",
+<<<<<<< HEAD
                                               plotOutput("plot2"))
+=======
+                                              plotOutput("plot2")),
+                                     tabPanel("Data",DT::dataTableOutput("state3"))
+>>>>>>> fd8d45737949f40fa850bb6f89daf8a12e4deead
                ))
-             )),
+             ),
     tabPanel(
       "References",
       h3("Code Repository at Github", style = "text-align:left"),
@@ -208,7 +222,7 @@ server <- function(input, output, session) {
     
       state_df %>%
       filter(State==input$state & year==input$year) %>%
-      select(Served,InCare_Sep30,entered,exited,waiting_Adoption,parental_rights_terminated,adopted) %>%
+      select(Served,InCare_Sep30,Entered,Exited,Waiting_Adoption,parental_rights_terminated,adopted) %>%
       gather(indicators,count,'Served':'adopted')
   })
   
@@ -218,7 +232,7 @@ server <- function(input, output, session) {
     
     df <- pie_selectdf() %>%
       # factor levels need to be the opposite order of the cumulative sum of the count
-      mutate(Group = factor(indicators, levels = c("Served","InCare_Sep30","entered","exited","waiting_Adoption","parental_rights_terminated","adopted")),
+      mutate(Group = factor(indicators, levels = c("Served","InCare_Sep30","Entered","Exited","Waiting_Adoption","parental_rights_terminated","adopted")),
              cumulative = cumsum(count),
              midpoint = cumulative - count / 2,
              #label = paste0(Group, " ", round(count / sum(count) * 100, 1), "%"))
@@ -230,6 +244,7 @@ server <- function(input, output, session) {
       coord_polar(theta = "y") +
       geom_text(aes(x = 1, y = count, label = label),position = position_stack(vjust = .6))+
       theme_void()  
+
   })
   #<< pie-chart-Ends
   
@@ -315,7 +330,7 @@ server <- function(input, output, session) {
     ## Read the shape file
     us_states <- st_read("./shp/states.shp")
     
-    ### Filter the data for 2009 and rename the state column
+    ### Filter the data for the year & category and rename the state column
     state_data_year <-
       state_df %>% gather(key="Category",value="Value",-State,-year) %>% 
       filter(year == as.numeric(input$year) & Category == as.character(input$map_category) )%>% rename(STATE_NAME = State)
@@ -351,6 +366,60 @@ server <- function(input, output, session) {
         geo = g) %>%
       layout(plot_bgcolor = 'transparent') %>%
       layout(paper_bgcolor = 'transparent')
+  })
+  
+  
+  
+  ## Horizontal bars for top 10 countries in Category
+  output$top_ten_countries <- renderPlot({
+    ### Filter the data for the year & category and rename the state column
+    top_10_state_category_year <-
+      state_df %>% gather(key="Category",value="Value",-State,-year) %>% 
+      filter(year == as.numeric(input$year2) & Category == as.character(input$category)) %>%
+      arrange(desc(Value)) %>% head(10)
+    
+    top_10_state_category_year %>% 
+      ggplot() +
+      geom_col(aes(x=reorder(State,Value),y=Value,fill=Value)) +
+      coord_flip() +
+      scale_fill_viridis(option = "C") +
+      theme_minimal() +
+      theme(legend.position = "none",
+            axis.text.x=element_blank(),
+            # axis.text.y=element_blank(),
+            axis.ticks.x=element_blank(),
+            # axis.ticks.y=element_blank(),
+            panel.grid.major = element_blank()) +
+      labs(x="",y="")
+    
+  })
+  
+  
+  
+  ## Parallel Coordinate Plot
+  output$parl_coord_plot <- renderPlotly({
+    
+    state_data_filtered <- state_nation_df %>% filter(State %in% c(input$state1,input$state2))
+    
+    state_data_filtered %>%
+      plot_ly() %>%
+      add_trace(type = 'parcoords',
+                line = list(color = ~Served,
+                            colorscale = 'Jet',
+                            showscale = TRUE
+                ),
+                dimensions = list(
+                  list(range=c(0,3),tickvals=c(0,1,2,3),
+                       ticktext=c('',input$state2,input$state1,''),label = 'State', 
+                       values = ~ifelse(State==input$state2,1,2)),
+                  list(label = 'Year', values = ~year),
+                  list(range = c(~min(Served),~max(Served)),
+                       label = 'Served', values = ~Served),
+                  list(range = c(~min(adopted),~max(adopted)),
+                       label = 'Adopted', values = ~adopted)
+                )
+      )
+
   })
   
 
