@@ -22,7 +22,7 @@ state_df = state_data()
 nation_df = nation_data()
 kids_df = kids_data()
 state_nation_df = state_nation_data()
-
+category_definitions = category_definition()
 
 ui <- fluidPage(
   navbarPage(
@@ -112,6 +112,9 @@ ui <- fluidPage(
                  width = 3
                ),
                mainPanel(tabsetPanel(id="dataActionTab",
+                 tabPanel("Categories We Explored",
+                          DT::dataTableOutput("category_list")
+                          ),
                  tabPanel("Data",
                           DT::dataTableOutput("nation"),
                           DT::dataTableOutput("state")),
@@ -357,11 +360,17 @@ server <- function(input, output, session) {
   })
   #<< pie-chart-Ends
   
+  ## Category Definition table
+  output$category_list <- DT::renderDataTable(category_definitions)
+  
+  ## National Datatable
   output$nation <- DT::renderDataTable(
     if(input$table=="National"){
       DT::datatable(
         filter(nation_df,FY==input$year))
     })
+  
+  ## State Datatable
   output$state <- DT::renderDataTable(
     if(input$table=="State"){
       DT::datatable( filter(state_df,year==input$year))
