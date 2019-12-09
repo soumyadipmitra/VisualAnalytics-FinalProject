@@ -1,0 +1,21 @@
+# Future Work
+
+When building this application, we wanted to design an application that could serve as big an audience as possible. One possibility would be expanding the location to have a worldwide view of foster care system, by gathering information for different countries. Having more data at the county level could also provide more information about what type of areas (rural, large cities, etc.) are having more need of better adoptions and child care facilities.
+One another thing that we want to enhance in this project is the feature of Shiny Sweep. We have built a sentiment analysis model after taking twitter data to check public sentiment on foster care and adoption. We would like to further integrate the User Interface with the shiny sweep functionality to quickly show whether a tweet is having a positive or negative sentiment about foster care and adoption.
+Earlier this month, First Focus on Children released their Children’s Budget 2019 report, detailing the federal programs and investments that touch children’s lives, such as those related to housing, nutrition, K-12 education, and early childhood education. The report reveals that after adjusting for inflation, the share of federal spending devoted to children dropped from 7.98 percent in 2015 to 7.21 percent in 2019. Considering the Children’s Budget 2019 report, the federal government must make dramatic changes to the budgeting process itself and harness the collective political will to reverse this downward trend in investment. As lawmakers continue to work to determine federal spending levels for Fiscal Year 2020 and the years ahead, funding for early care and education should be prioritized to meet the needs of children to whom this country will one day belong.
+Other questions we drew from this project, for which we did not have data, were which states have stricter laws for child care and if that helps contribute to better adoption rates and facilities to children. We would like to draw a correlation between a state’s growth rate vs the child care facilities in the state over a period of time.
+
+References:
+
+The Future of Foster Care – NCSL  www.ncsl.org › Documents › magazine › articles › SL_1009-fostercare
+
+Foster Care Reforms https://www.childrensrights.org/our-campaigns/foster-care-reform/
+
+https://www.ncsc.org/Microsites/EveryKid/Home/New-Law.aspx
+
+https://www.acf.hhs.gov/cb/resource/trends-in-foster-care-and-adoption
+
+https://www.acf.hhs.gov/sites/default/files/cb/trends_fostercare_adoption_09thru18.pdf
+
+https://www.ncsc.org/Microsites/EveryKid/Home/New-Law.aspx
+

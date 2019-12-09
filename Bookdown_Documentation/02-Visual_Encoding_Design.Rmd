@@ -1,0 +1,69 @@
+# Visual Encoding and Interaction Design
+
+## Visual Encoding
+
+This section focuses on looking into Foster Care and Adoption data to see distribution of various foster care categories across the country. The user has the ability to select by different categories from the dataset to see how the foster care distribution changes. This allows the user to examine distribution across each state for different foster care categories used and these could aid in their research towards understanding each state wise Foster care statistics.
+
+Our data is centered around visualizing indicator data in the United States for a social worker. Based on this we decided to encode our data in the form of a map visualization in order to allow the user to see how data changes from state to state and see patterns in different regions of the country. The values are encoded based on the variable selected using a choropleth mapping style that shades each state based on their value with lower values typically being lighter and transitioning to darker colors for higher values.
+
+Choropleth to show proportion of Served indicator in Washington in 2014
+```{r echo=FALSE}
+knitr::include_graphics(rep("images/Chap3_Img1.png"))
+```
+
+This donut graph visual displays the proportion of the different indicators for a given state and year combination.
+
+Donut graph to show proportion of indicators for Alabama in 2010
+```{r echo=FALSE}
+knitr::include_graphics(rep("images/Chap3_Img2.png"))
+```
+
+As part of the data characterization, we felt it was important to identify which indicators were used the most based on different variables. To provide this information to the user we developed a word cloud visualization. The most recorded indicators are displayed larger than the lower values which scale down in order of frequency, so it becomes clear to the user which indicators have the largest values.
+
+As part of foster kid’s analysis, we focused on comparing the most important categories: Served and Adoption across the country. The first part of the data involved finding information about number of Children in Foster Care in the United States. And the second part involves about the number of adoptions that are finalized each year. This would also allow the researcher to drill down to the state level and helps in understanding current trends between these two categories. For this, we created a bar chart plot and a parallel coordinates plot.
+Here it allows a user to select states and compare important categories: Served and Adopted over time. The idea is that user can use this section to help guide their focus to certain states and then use the analysis tab to see the relationships between the different dataset
+
+Bar Chart for comparison of Served Indicator among top 10 states for 2010
+```{r echo=FALSE}
+knitr::include_graphics(rep("images/Chap3_Img3.png"))
+```
+
+The user has the ability to select by these two categories from the dataset to see how the foster care distribution changes. We included the national average as a reference to see the level of impact of the selected state over time. This allows the user to examine distribution between two States or State vs National Average.
+
+Parallel Coordinates plot for comparison of indicators: Served and Adopted for Alabama vs California
+```{r echo=FALSE}
+knitr::include_graphics(rep("images/Chap3_Img4.png"))
+```
+
+The analysis section focusses on what the findings are based on the data from the previous sections and help the users draw conclusions from the data.
+Numbers of Children in Foster Care: Since FY 2012, the numbers of children in care on the last day of each fiscal year through FY 2017 have increased. FY 2017’s 441,000 children represent an 11 percent increase over FY 2012’s 396,000. The numbers of children in care on the last day of FY 2018 as compared to FY 2017 is virtually unchanged representing a decrease of slightly less than 1 percent.
+Children Adopted: The number of adoptions that are finalized each year has remained relatively flat during the FYs 2011, 2012, 2013 and 2014. FY 2015’s 53,600 adoptions represented a nearly 6 percent increase over FY 2014’s 50,700. Each year since FY 2015 adoptions have increased each year to a historic high of 63,100 in FY 2018.
+
+Time Series Plot for different indicators on a national level from FY2009-FY2018
+```{r echo=FALSE}
+knitr::include_graphics(rep("images/Chap3_Img5.gif"))
+```
+
+The second visualization is a sunburst chart that takes Foster Care kids distribution by Age Group across the top 10 states (wrt count of kids in the given age bracket) of United States and shows how they compare to one another. This not only allows the researcher to find patterns about which age groups are high and where to focus research, but also how the different foster care categories are changing over time.
+
+Sunburst Plot to show kids distribution by age group for top 10 states
+```{r echo=FALSE}
+knitr::include_graphics(rep("images/Chap3_Img6.png"))
+```
+
+## Interaction Design
+
+The application has information for the entire United States so one key interaction to be implemented for the user was the ability to select a state or show data nationally. In most datasets we collected data for different years so a user can see how data changes from year to year. To do this, we implemented a slider so the user can navigate through the data, and we also allow the user to start an animation to cycle through the years so the user can focus on the visualization and see how the data changes. Some of our datasets have different variables that we deem important, but may take away from the visualization if shown all together. We implemented drop down tabs and radio buttons so that the user can select a variable to display it on the visualization. We also give the user the option to change the format in certain sections of our visualizations. To do this we created tab panels that allow the user to click on a panel to see the data in multiple formats such as a map and data grid. 
+Lastly, with this application being designed as a research tool for social workers, we wanted a way for users to take our visualization out of the application and into their research environment whether that is in a report or a presentation. To implement this, we added a download button in all of the data tables. The Download button is conditionally available only when the user is in the data tab and is accessible by simply clicking the Download button at which point the export will be downloaded to the user’s computer. One benefit of using Plotly is that it comes with an option to export the plot by default, so all our Plotly based visualizations can easily be downloaded as an image.
+
+```{r echo=FALSE}
+knitr::include_graphics(rep("images/Chap3_Img7.png"))
+```
+
+```{r echo=FALSE}
+knitr::include_graphics(rep("images/Chap3_Img8.png"))
+```
+
+```{r echo=FALSE}
+knitr::include_graphics(rep("images/Chap3_Img9.png"))
+```

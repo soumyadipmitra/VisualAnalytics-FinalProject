@@ -2,6 +2,8 @@
 
 Shiny App: https://ramyaprakash.shinyapps.io/dsba5122-FinalProject-FosterCare-And-Adoption/
 
+Bookdown Documentation: https://dsba5122finalproject.netlify.com/
+
 ## Project Topic
 **Foster Care Analysis for US States**
 

@@ -1,0 +1,13 @@
+# Operations and Data Type Abstraction
+
+## Data Operations
+
+The first focus of our operations was to develop the dataset into such a format that can be aggregated at the state and national level. The national data contained data at the national and state level for each indicator. Other datasets were provided to us on a year-by-year basis for each of the 7 indicators in various worksheets, so we assembled the data into a single dataset and wrote functions to calculate and display results at the indicator level for each state across years. We then merged the indicator level data for all the states in a single worksheet for usability purposes. We created functions that were called from operations in the user interface of the application and used the R library dplyr to filter, gather, select, group, summarize and arrange our dataset to return information only related to the options selected by user in the application such as state and indicator name.
+
+## Data Type Abstraction
+
+The data we acquired and derived from our data operations was crafted to be displayed in the form of a map visualization to give a representation at the national level, but also allow users to explore data at the state level by seeing how different variables affect the state of interest to the researcher. The representation of the values shown is indicated in the application to make users aware of the scale that the values are displayed.
+We used a variety of sources to get information about foster care. The indicator level data was a very large file with multiple worksheets because it listed records for every state and indicator for the entire country. We cleaned the data and summarized it in a single sheet by using R library dplyr to filter, gather, select, group and summarize. This significantly improved the load time of the data in R and helped us to work with the files.
+As a tool designed for researchers, we wanted to provide a variety of information related to indicators to get a quantitative view of what states are leading and have the highest no of adopted children. Based on the available data, we chose to use served and adopted as our most important indicators. The age data divided ages of children in the foster care system into the following groups, 0-4, 5-11, 12-14 and 15-17 years for the top 10 states (wrt to count of kids in the age bracket) as California, Texas etc. This helped us in seeing an age level distribution across states for the different indicators. We also used shapefiles for the spatial data consisting of data at the state level and also data at the state level for our analysis on indicators. 
+
+

@@ -1,0 +1,47 @@
+--- 
+title: "Foster Care Project Documentation"
+author: "Soumydip Mitra, Ramya Prakash, Shruti Agrawal"
+date: "`r Sys.Date()`"
+site: bookdown::bookdown_site
+output: bookdown::gitbook
+documentclass: book
+bibliography: [book.bib, packages.bib]
+biblio-style: apalike
+link-citations: yes
+github-repo: soumyadipmitra/VisualAnalytics-FinalProject
+description: "Detailed Project Documentation for Foster Care Shiny App Project which is our Final Project for Visual Analytics Fall 2019"
+---
+
+# Introduction: Domain Problem and Data Characterization
+
+## Domain Problem
+
+For our project we explored data related to foster care, in an effort to better understand and obtain insight into the foster care system across United States of America. Foster care is a living arrangement for children who a child protective services worker and a court has decided cannot live safely at home. Foster care arrangements include non-relative foster homes, relative foster homes (also known as “kinship care”), group homes, institutions, and pre-adoptive homes.
+We strongly believe that each child deserves a home. Our domain problem is one for a social worker wanting to provide support and services to the foster kids. But a social worker can only access existing resources in a community. If no resources exist, there is nothing that a social worker can really do except provide a continuing, stable presence in the child’s life. This is where we need to do better as a community to help foster kids. We need to give them access to resources so that if an adoption isn’t available, they will still have tools, a supportive environment, and people who care about their dreams. There is great potential for data and technology to be used to help tackle the complex problems faced by the sector, ensure the well-being of foster youth, and even reduce the number of children who end up in foster care in the first place. The research will further benefit government agencies to take corrective measures and determine where attention should be focused to ensure that children across the nation are taken care of. 
+To understand the data and problem at hand, we must first know the following 7 indicators -
+Served: This is an estimated count of all children who were in the public foster care system during the FY. This number is the sum of two mutually exclusive groups of children: the children who are already in care on the first day of the fiscal year (as of October 1) and the children who enter foster care during the year. An individual child is counted only once for each year.
+In Care on Sept 30th: This is an estimated count of all the children in foster care on the last day of the FY. An individual child is included in the count for each year for which he or she is in foster care on the last day.
+Entered: This is an estimated count of all children who entered foster care during the FY. An individual child is counted only once for each year, even if the child entered, exited, and reentered care during the year. The most recent date of removal from home is used to determine whether the child entered foster care during the period.  If an individual child entered in one year and then exits and re-enters in a subsequent year, he or she is included in the count of entries for both years.
+Exited: This is an estimated count of all children who exited foster care during the FY at the end of their most recent foster care episode. An individual child is counted only once for each year, even if the child exited, re-entered, and exited again during the year. The most recent date of discharge (from foster care) is the one counted. If an individual child exited care in one year and then re-enters and exits again in a subsequent year, he or she is included in the count of exits for both years.
+Waiting for Adoption: This is an estimated count of all children who are waiting to be adopted on the last day of the FY. An individual child is included in the count for each year in which he or she is waiting to be adopted on the last day. There is no Federal definition for children waiting to be adopted. For the purposes of this analysis, children waiting to be adopted include children with a goal of adoption and/or whose parental rights have been terminated. The “waiting” population excludes children whose parents’ rights have been terminated, who are 16 years old and older, and who have a goal of emancipation. An individual child is included in the count for each year that he or she has these characteristics on the last day of the year.
+Parental Rights Terminated: This is an estimated count of all children in care on the last day of the FY whose parental rights have been terminated and who are waiting for adoption. An individual child who has these characteristics on the last day of the year is counted only once for that year.
+Adopted: This is an estimated count of all children adopted with public child welfare agency involvement during the FY. An individual child is counted only once for each year, even if (in rare cases) the child was adopted multiple times during the year. In cases when an individual child is adopted in one year and then adopted again in a subsequent year, he or she is included in the count of adoptions for both years.
+
+## Data Characterization
+
+Beginning 1994 Child welfare continues to be a growing concern in the United States, with the number of children in foster care having increased steadily since 2012. According to the Administration for Children and Families (ACF), approximately 437,500 children were reported to be in the foster care system in 2016. Whereas, in 2012, the number of youths in foster care was estimated at 397,000. 
+Adding to the problem is America’s escalating opioid crisis. More and more children are entering foster care as a result of parental drug abuse, placing a strain on an already overtaxed child welfare system. Data from the federal Adoption and Foster Care Analysis and Reporting System (AFCARS) shows drug abuse by a parent as one of the leading causes for a child to be removed from their home, with more than 92,000 children entering foster care between 2015 to 2016 for this reason alone. There is great potential for data and technology to be used to help tackle the complex problems faced by the sector, ensure the well-being of foster youth, and even reduce the number of children who end up in foster care in the first place.
+For data about foster care system, we acquired Data from the U.S Department of Health and Human Services – Children’s Bureau. Our data sources are - National DataSet, State Level DataSet, FosterKids Data by Age Group and Twitter. We focused our research on this dataset to indicators we felt would be of most interest to the researcher. These indicators are served and adopted. The first part of the data involved finding information about number of Children in Foster Care in the United States. And the second part involves about the number of adoptions that are finalized each year. This would also allow the researcher to drill down to the state level. Another level of detail that we felt would be an important task for the social worker is to understand people's sentiment about the foster care and adoption system in the nation.
+The below graph shows a snapshot of the various indicators for the entire country across FY2009-FY2018. From this, we see that Served and In-care on Sept.30th are one of the leading indicators. Also, a dip can be seen across most indicators in 2012. This could be attributed to the changes in different government policies such as Obama Care etc. around the same time.
+
+```{r echo=FALSE}
+knitr::include_graphics(rep("images/Chap1_Img1.png"))
+```
+
+## Target Users
+
+As mentioned in the previous section, this application is being designed for a social worker in the child care sector. Our aim was to make this a tool that a social worker can use to find information at both the national and state level. This allows the usability to reach a larger audience where researchers from any state can use this tool to find information about their state of interest and compare what the findings are nationally or compare against other states. With the hope of social workers using this application to find valuable insight that can be used in their research, most of our visualization plots can be exported as images.
+
+## Application Information
+
+Information about the changes made to the application and how to install it locally can be found on our GitHub repo at https://github.com/soumyadipmitra/VisualAnalytics-FinalProject
