@@ -110,16 +110,6 @@ ui <- tagList(
                  selectInput("state2", "Select Another State to Compare:", choices =  unique(sort(state_df$State)),selected = 'California'),
                  
                  #),
-                 sliderInput(
-                   "year1",
-                   "Year :",
-                   min = 2009,
-                   max = 2018,
-                   value = 2010,
-                   animate = animationOptions(interval = 4000, loop =
-                                                TRUE),
-                   sep = ""
-                 ),
                  h4("Description"),
                  p("TODO"),
                  width = 3
