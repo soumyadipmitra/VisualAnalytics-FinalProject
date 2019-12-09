@@ -299,7 +299,7 @@ server <- function(input, output, session) {
       gather(indicators,count,'Served':'adopted')
   })
   
-  #<< pie-chart-Starts
+  ## Pie Chart Plotly
   output$pie_chart <- renderPlotly({
     
     df <- pie_selectdf() %>%
@@ -318,7 +318,8 @@ server <- function(input, output, session) {
     #   geom_text(aes(x = 1, y = count, label = label),position = position_stack(vjust = .6),check_overlap = TRUE,color='white')+
     #   theme_void()  
     
-    plot_ly(df, labels = ~Group, values = ~count, type = 'pie') %>%
+    plot_ly(df, labels = ~Group, values = ~count) %>%
+      add_pie(hole = 0.6) %>%
       layout(xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
              yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE))
 
