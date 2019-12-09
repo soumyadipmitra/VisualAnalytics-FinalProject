@@ -112,7 +112,8 @@ ui <- fluidPage(
                ),
                mainPanel(tabsetPanel(id="dataActionTab",
                  tabPanel("Map",
-                          textOutput("map_text"),
+                          h3(textOutput("map_text"), style = "text-align:center;font-weight:bold"),
+                          # textOutput("map_text"),
                           plotlyOutput("map",width = "100%",height="800")
                           ),
                  tabPanel("Plot",
@@ -463,9 +464,9 @@ output$downloadKidsData <- downloadHandler(
       layout(
         font = list(
           color = 'black'),
-        geo = g) %>%
-      layout(plot_bgcolor = 'transparent') %>%
-      layout(paper_bgcolor = 'transparent')
+        geo = g)
+      # layout(plot_bgcolor = 'transparent') %>%
+      # layout(paper_bgcolor = 'transparent')
   })
   
   
