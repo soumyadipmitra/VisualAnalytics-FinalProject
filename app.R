@@ -230,6 +230,33 @@ ui <- fluidPage(
                                      tabPanel("Data",DT::dataTableOutput("kids_by_Age_group_data"))
                ))
              ),
+    ## 'Data in Action' tab
+    tabPanel("SocialMedia",
+             sidebarPanel(
+               h3("Input"),
+               fileInput(inputId = "file_1",
+                         label = "Select Input file:"),
+               hr(),
+               h3("Word Cloud Settings"),
+               sliderInput("maxwords","Max # of Words:",min = 10, max = 200, value = 100, step = 10),
+               sliderInput("largestwords","Size of largest words:",min = 1, max = 8, value = 4),
+               sliderInput("smallestwords","Size of smallest words:",min = 0.1, max = 4, value = 0.5),
+               h4("Description"),
+               p("This section focuses on analyzing public opinion about Foster Care and Adoption.
+               Data has been collected from social media(example: Twitter) and we are utilizing Sentiment Analysis on user reviews and attempt to 
+               comprehend what is public's general response to FosterCare and Adoption."),
+               br(),
+               p("The user has the ability to upload an input file that contains public tweets and generate wordcloud.
+                The most commonly used words can be found the prominence in size and color in the cloud."),
+               br(),
+               width = 3
+             ),
+             mainPanel(tabsetPanel(id="cloudTab",
+                                   tabsetPanel(
+                                     tabPanel("Word Cloud",plotOutput("cloud", height = "600px"))
+                                   )
+             ))
+    ),
     tabPanel(
       "References",
       h4("Code Repository at Github", style = "text-align:left"),
@@ -585,6 +612,41 @@ output$downloadKidsData <- downloadHandler(
     DT::datatable(state_df)
       })
 
+  input_tweet_file <- reactive({
+    if(is.null(input$file_1)){
+      return("!! No data loaded !!")
+    }
+    readLines(input$file_1$datapath)
+  })
+  
+  
+  output$cloud<-renderPlot({
+    
+    text<-tibble(text=input_tweet_file())
+    #text <-  tibble(text = readLines(sprintf("./data/%s.txt", Inpfile), encoding="UTF-8"))
+    
+    # could also pass column of text/character instead
+    text <- text %>%
+      unnest_tokens(word, text) %>%
+      count(word, sort = TRUE) 
+    
+    
+    text <- text %>%
+      anti_join(stop_words)
+    
+    
+    pal <- brewer.pal(8,"Dark2")
+    
+    text %>% 
+      with(
+        wordcloud(
+          word, 
+          n, 
+          scale = c(input$largestwords,input$smallestwords),
+          random.order = FALSE, 
+          max.words = input$maxwords, 
+          colors=pal))
+  })
   
 }
 
