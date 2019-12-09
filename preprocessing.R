@@ -2,6 +2,11 @@ library(tidyverse)
 library(tidyr)
 library(readxl)
 
+kids_data <- function() {
+  #kids dataset
+  kids = read_excel('data/Child population by age group.xlsx')
+  return(kids)
+}
 
 nation_data <- function() {
   #national dataset
