@@ -20,10 +20,7 @@ state_df = state_data()
 nation_df = nation_data()
 kids_df = kids_data()
 state_nation_df = state_nation_data()
-<<<<<<< HEAD
 
-=======
->>>>>>> 784ca9f9e5e493a0e0bca7a4f9bc2e115db85949
 
 ui <- tagList(
   navbarPage(
@@ -74,6 +71,8 @@ ui <- tagList(
                  ),
                  sliderInput("year", "Year :", min=2009, max=2018, value=2010, 
                              animate = animationOptions(interval=1000,loop=TRUE),sep = ""),
+                 conditionalPanel(
+                   condition = "input.dataActionTab == 'Map'",
                  selectInput("map_category","Select the Category: ",
                              choices = c("Served" = "Served",
                                "In Care as of Sep 30" = "InCare_Sep30",
@@ -82,7 +81,8 @@ ui <- tagList(
                                "Waiting for Adoption" = "Waiting_Adoption",
                                "Parental Rights Terminated" = "parental_rights_terminated",
                                "Adopted" = "adopted"
-                             )),
+                             ))
+                 ),
                  # show download only for the data tab
                  conditionalPanel(
                    condition = "input.dataActionTab == 'Data'",
@@ -163,13 +163,9 @@ ui <- tagList(
                ),
                mainPanel(tabsetPanel(id="analysisTab",
                                      tabPanel("Plot",
-<<<<<<< HEAD
                                               plotOutput("timeSeries",height="250px"),
-                                              plotOutput("sunburst_chart"))
-=======
-                                              plotOutput("plot2")),
+                                              plotOutput("sunburst_chart")),
                                      tabPanel("Data",DT::dataTableOutput("state3"))
->>>>>>> 784ca9f9e5e493a0e0bca7a4f9bc2e115db85949
                ))
              ),
     tabPanel(
@@ -272,7 +268,7 @@ server <- function(input, output, session) {
     
     sunburst_0 = ggplot(firstLevel)
     sunburst_1 = sunburst_0 + 
-      geom_bar(data=firstLevel, aes(x=1, y=total_pop), fill='darkgrey', stat='identity') +
+      geom_bar(data=firstLevel, aes(x=1, y=total_pop), fill='grey', stat='identity') +
       geom_text(aes(x=1, y=sum_total_pop/2, label=paste('Foster kids: ', comma(total_pop))), color='white')
     
     sunburst_1  + coord_polar('y')
