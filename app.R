@@ -24,10 +24,10 @@ kids_df = kids_data()
 state_nation_df = state_nation_data()
 
 
-ui <- tagList(
+ui <- fluidPage(
   navbarPage(
     "FosterCare and Adoption",
-    theme = shinytheme("cerulean"),
+    theme = shinytheme("cosmo"),
     tabPanel(
       "Every Kid needs a Family",
       tags$div(
@@ -54,6 +54,9 @@ ui <- tagList(
         )
       ),
       h3("Source Data", style = "text-align:left"),
+      tags$head(
+        tags$link(rel = "stylesheet", type = "text/css", href = "custom.css")
+      ),
       div(
         p("Our source data is available at:"),
         a(href = "https://www.acf.hhs.gov/sites/default/files/cb/national_afcars_trends_2009_through_2018.xlsx", "National DataSet"),
