@@ -154,11 +154,6 @@ ui <- tagList(
     tabPanel("Analysis",
                sidebarPanel(
                  h3("Input"),
-                radioButtons("ageGroup", "Choose One:",
-                              c("0 to 4" = "0 to 4",
-                                "5 to 11" = "5 to 11",
-                                "12 to 14" = "12 to 14",
-                                "15 to 17" = "15 to 17")),
                  selectInput("state3", "State", choices = unique(state_df$State)),
                  sliderInput(
                    "year2",
@@ -170,9 +165,18 @@ ui <- tagList(
                                                 TRUE),
                    sep = ""
                  ),
+                 conditionalPanel(
+                   condition = "input.analysisTab == 'Kids Distribution'",
+                 radioButtons("ageGroup", "Choose One:",
+                              c("0 to 4" = "0 to 4",
+                                "5 to 11" = "5 to 11",
+                                "12 to 14" = "12 to 14",
+                                "15 to 17" = "15 to 17"))),
                  h4("Description"),
                  p("The analysis sections focuses on what the findings are based on the data from the previous sections and help the users draw conclusions from the data."),
                  br(),
+                 conditionalPanel(
+                   condition = "input.analysisTab == 'Plot'",
                  p("Numbers of Children in Foster Care: Since FY 2012, the numbers of children in care on the last day of each fiscal year through FY 2017 have increased. 
                    FY 2017’s 441,000 children represent an 11 percent increase over FY 2012’s 396,000. The numbers of children in care on the last day of FY 2018 as compared to FY 2017 is 
                    virtually unchanged representing a decrease of slightly less than 1 percent."),
@@ -180,11 +184,12 @@ ui <- tagList(
                  p("Children Adopted: The number of adoptions that are finalized each year has remained relatively flat during the FYs 2011, 2012, 2013 and 2014. 
                    FY 2015’s 53,600 adoptions represented a nearly 6 percent increase over FY 2014’s 50,700. Each year since FY 2015 adoptions have increased each 
                    year to a historic high of 63,100 in FY 2018."),
-                 br(),
+                 br()),
         p("Here the first visualization allows a user to select a state and compare important categories: Served and Adopted over time.
         The idea is that user can use the previous sections to help guide there focus to certain states and then use the analysis tab to see
-        the relationships between the different dataset.
-        The second visualization is a sunburst chart that takes FosterCare kids distribution by AgeGroup across the United States and shows how they compare to one another.
+        the relationships between the different dataset"),
+        br(),
+        p("The second visualization is a sunburst chart that takes FosterCare kids distribution by AgeGroup across the United States and shows how they compare to one another.
         This not only allows the researcher to find patterns about which age groups are high and where to focus research,
         but also how the different fostercare categroies are changing over time.
          "),
@@ -192,8 +197,10 @@ ui <- tagList(
                ),
                mainPanel(tabsetPanel(id="analysisTab",
                                      tabPanel("Plot",
-                                              plotOutput("timeSeries",height="250px"),
-                                              plotOutput("sunburst_chart"))
+                                              plotOutput("timeSeries",height="250px")),
+                                     tabPanel("Kids Distribution",
+                                              plotOutput("sunburst_chart")),
+                                     tabPanel("Data",DT::dataTableOutput("kids_by_Age_group_data"))
                ))
              ),
     tabPanel(
@@ -284,6 +291,9 @@ server <- function(input, output, session) {
       filter(LocationType=="State",TimeFrame==input$year2,DataFormat=="Number",AgeGroup==input$ageGroup)
     
   })
+  
+  output$kids_by_Age_group_data <- DT::renderDataTable(DT::datatable(kids_selectdf()))
+  
   
  
   output$sunburst_chart <- renderPlot({
@@ -428,8 +438,6 @@ server <- function(input, output, session) {
   })
   
   output$top_ten_countries_data <- DT::renderDataTable(DT::datatable(top_10_state_category_year()))
-  
-  
   
   ## Parallel Coordinate Plot
   output$parl_coord_plot <- renderPlotly({
