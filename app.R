@@ -11,11 +11,8 @@ library(sunburstR)
 source("preprocessing.R", local = TRUE)
 state_df = state_data()
 nation_df = nation_data()
-<<<<<<< HEAD
 kids_df = kids_data()
-=======
 state_nation_df = state_nation_data()
->>>>>>> fd8d45737949f40fa850bb6f89daf8a12e4deead
 
 ui <- tagList(
   navbarPage(
@@ -131,16 +128,13 @@ ui <- tagList(
                  h3("Input"),
                  #conditionalPanel(
                  #condition = "input.dataAction == 'Plot' | input.dataAction == 'Data'",
-<<<<<<< HEAD
                  #selectInput("ageGroup", "AgeGroup", choices = unique(state_df$State)),
                  radioButtons("ageGroup", "Choose One:",
                               c("0 to 4" = "0 to 4",
                                 "5 to 11" = "5 to 11",
                                 "12 to 14" = "12 to 14",
                                 "15 to 17" = "15 to 17")),
-=======
                  selectInput("state3", "State", choices = unique(state_df$State)),
->>>>>>> fd8d45737949f40fa850bb6f89daf8a12e4deead
                  #),
                  sliderInput(
                    "year2",
@@ -158,12 +152,8 @@ ui <- tagList(
                ),
                mainPanel(tabsetPanel(id="analysisTab",
                                      tabPanel("Plot",
-<<<<<<< HEAD
-                                              plotOutput("plot2"))
-=======
                                               plotOutput("plot2")),
                                      tabPanel("Data",DT::dataTableOutput("state3"))
->>>>>>> fd8d45737949f40fa850bb6f89daf8a12e4deead
                ))
              ),
     tabPanel(
