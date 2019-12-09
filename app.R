@@ -29,27 +29,27 @@ ui <- fluidPage(
     "FosterCare and Adoption",
     theme = shinytheme("cosmo"),
     tabPanel(
-      "Every Kid needs a Family",
+      "Every Kid Needs a Family",
       tags$div(
         tags$img(src = "Child_Fostercare_adoption.png",height="300px"),style = "text-align:center"),
       h3("Project Objective", style = "text-align:left"),
       tags$div(
         tags$p(
-          "This is a research project for DSBA-5122 at UNC Charlotte.For the project we wanted to explore data related to Foster Care and Adoption System across US.
-      Foster care is intended to provide temporary, safe living arrangements and therapeutic services for children who cannot remain safely at home because of risk for maltreatment or inadequate care.Foster care arrangements include non-relative foster homes, relative foster homes (also known as “kinship care”), group homes, institutions, and pre-adoptive homes."
+          "This is a research project for DSBA-5122 at UNC Charlotte. For the project we wanted to explore data related to Foster Care and Adoption System across US. 
+      Foster care is intended to provide temporary, safe living arrangements and therapeutic services for children who cannot remain safely at home because of risk for maltreatment or inadequate care. Foster care arrangements include non-relative foster homes, relative foster homes (also known as “kinship care”), group homes, institutions, and pre-adoptive homes. "
         ),
         tags$p(
-          "Our domain problem is one for a socialworker wanting to provide support and services to the foster kids.But a social worker can only access existing resources in a community. If no resources exist,
-      there is nothing that a social worker can really do except provide a continuing, stable presence in the child’s life. This is where we need to do better as a community to help foster kids.
-      We need to give them access to resources so that if an adoption isn’t available, they will still have tools, a supportive environment, and people who care about their dreams.
-      There is great potential for data and technology to be used to help tackle the complex problems faced by the sector, ensure the well-being of foster youth, and even reduce the number of children who end up in foster care in the first place."
+          "Our domain problem is one for a socialworker wanting to provide support and services to the foster kids. But a social worker can only access existing resources in a community. If no resources exist,
+      there is nothing that a social worker can really do except provide a continuing, stable presence in the child’s life. This is where we need to do better as a community to help foster kids. 
+      We need to give them access to resources so that if an adoption isn’t available, they will still have tools, a supportive environment, and people who care about their dreams. 
+      There is great potential for data and technology to be used to help tackle the complex problems faced by the sector, ensure the well-being of foster youth, and even reduce the number of children who end up in foster care in the first place. "
         ),
         tags$p(
           "The report and data visualization presented in the project is the national estimates related to children who experience time in foster care and who are adopted from the foster care system,
       relative to each Federal Fiscal Year."
         ),
         tags$p(
-          "This data would allow the social worker to see the distribution of different fostercare indicators across the nation.The first part of the data involved finding information about number of Children in Foster Care in the United States. And the second part involves about the number of adoptions that are finalized each year.This would also allow the researcher to drill down to the state level.
+          "This data would allow the social worker to see the distribution of different fostercare indicators across the nation. The first part of the data involved finding information about number of Children in Foster Care in the United States. And the second part involves about the number of adoptions that are finalized each year. This would also allow the researcher to drill down to the state level. 
                         Another level of detail that we felt would be an important task for the socialworker is to understand people's sentiment about the fostercare and adoption system in the nation."
         )
       ),
@@ -164,7 +164,8 @@ ui <- fluidPage(
                ),
                mainPanel(tabsetPanel(id="fosterkidsTab",
                                      tabPanel("Plot",
-                                              plotOutput("top_ten_countries",height="250px"),
+                                              h3(textOutput("top10states_text"), style = "text-align:center;font-weight:bold"),
+                                              plotOutput("top_ten_states",height="250px"),
                                               plotlyOutput("parl_coord_plot")),
                                      tabPanel("Data",DT::dataTableOutput("top_ten_countries_data"))
                ))
@@ -482,6 +483,10 @@ output$downloadKidsData <- downloadHandler(
       # layout(paper_bgcolor = 'transparent')
   })
   
+  ## Top Ten States text
+  output$top10states_text <- renderText({
+    paste("Top Ten States that ",input$category," in ",input$year2)
+  })
   
   top_10_state_category_year<- reactive({
   ### Filter the data for the year & category and rename the state column
@@ -493,7 +498,7 @@ output$downloadKidsData <- downloadHandler(
   
   
   ## Horizontal bar plot for top 10 countries in Category
-  output$top_ten_countries <- renderPlot({
+  output$top_ten_states <- renderPlot({
 
     
     top_10_state_category_year() %>% 
