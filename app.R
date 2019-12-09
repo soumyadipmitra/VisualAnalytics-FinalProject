@@ -269,7 +269,9 @@ ui <- fluidPage(
         h5("- Ramya Prakash")
         ,
         style = "text-align:center"
-      )
+      ),
+      tags$div(
+        tags$img(src = "UNCC_Logo.PNG",height="100px"),style = "text-align:center")
     )
     
     
