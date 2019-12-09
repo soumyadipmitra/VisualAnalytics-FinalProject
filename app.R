@@ -357,7 +357,7 @@ server <- function(input, output, session) {
                                        aes(x=2, y=total_pop, fill=total_pop, stroke=3),
                                        color='white', position='stack', stat='identity')
     
-    sunburst_3 = sunburst_2 + geom_text(data=secondLevel, aes(label=paste(Location, comma(total_pop)), x=2, y=pos, angle=angle))
+    sunburst_3 = sunburst_2 + geom_text(data=secondLevel, aes(label=paste(Location, comma(total_pop)), x=2, y=pos, angle=angle),color='black')
     sunburst_3 + scale_y_continuous(labels=comma) + scale_fill_viridis() + coord_polar('y') + theme_minimal()
  
 
