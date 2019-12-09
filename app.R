@@ -10,6 +10,7 @@ library(sf)
 source("preprocessing.R", local = TRUE)
 state_df = state_data()
 nation_df = nation_data()
+state_nation_df = state_nation_data()
 
 ui <- fluidPage(
   navbarPage(
@@ -98,7 +99,8 @@ ui <- fluidPage(
                  h3("Input"),
                  #conditionalPanel(
                  #condition = "input.dataAction == 'Plot' | input.dataAction == 'Data'",
-                 selectInput("state1", "State", choices =  unique(state_df$State)),
+                 selectInput("state1", "Select a State or Nation:", choices =  unique(sort(state_nation_df$State))),
+                 selectInput("state2", "Select Another State to Compare:", choices =  unique(sort(state_df$State)),selected = 'California'),
                  #),
                  sliderInput(
                    "year1",
@@ -115,7 +117,7 @@ ui <- fluidPage(
                ),
                mainPanel(tabsetPanel(id="fosterkidsTab",
                                      tabPanel("Plot",
-                                              plotOutput("plot1")),
+                                              plotlyOutput("parl_coord_plot")),
                                      tabPanel("Data",DT::dataTableOutput("State1"))
                ))
              )),
@@ -125,7 +127,7 @@ ui <- fluidPage(
                  h3("Input"),
                  #conditionalPanel(
                  #condition = "input.dataAction == 'Plot' | input.dataAction == 'Data'",
-                 selectInput("state2", "State", choices = unique(state_df$State)),
+                 selectInput("state3", "State", choices = unique(state_df$State)),
                  #),
                  sliderInput(
                    "year2",
@@ -273,6 +275,31 @@ server <- function(input, output, session) {
         geo = g) %>%
       layout(plot_bgcolor = 'transparent') %>%
       layout(paper_bgcolor = 'transparent')
+  })
+  
+  output$parl_coord_plot <- renderPlotly({
+    
+    state_data_filtered <- state_nation_df %>% filter(State %in% c(input$state1,input$state2))
+    
+    state_data_filtered %>%
+      plot_ly() %>%
+      add_trace(type = 'parcoords',
+                line = list(color = ~Served,
+                            colorscale = 'Jet',
+                            showscale = TRUE
+                ),
+                dimensions = list(
+                  list(range=c(0,3),tickvals=c(0,1,2,3),
+                       ticktext=c('',input$state2,input$state1,''),label = 'State', 
+                       values = ~ifelse(State==input$state2,1,2)),
+                  list(label = 'Year', values = ~year),
+                  list(range = c(~min(Served),~max(Served)),
+                       label = 'Served', values = ~Served),
+                  list(range = c(~min(adopted),~max(adopted)),
+                       label = 'Adopted', values = ~adopted)
+                )
+      )
+
   })
   
 
