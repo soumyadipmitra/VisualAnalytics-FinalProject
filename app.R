@@ -201,8 +201,10 @@ ui <- tagList(
                  width = 4
                ),
                mainPanel(tabsetPanel(id="analysisTab",
-                                     tabPanel("Plot",
-                                              plotOutput("timeSeries",height="250px")),
+                                     tabPanel("Time Series View",
+                                              # plotOutput("timeSeries",height="250px")
+                                              tags$img(src = "timeseries_plot.gif",width = "100%",height="600px")
+                                              ),
                                      tabPanel("Kids Distribution",
                                               plotOutput("sunburst_chart")),
                                      tabPanel("Data",DT::dataTableOutput("kids_by_Age_group_data"))
@@ -447,6 +449,7 @@ output$downloadKidsData <- downloadHandler(
       layout(paper_bgcolor = 'transparent')
   })
   
+  
   top_10_state_category_year<- reactive({
   ### Filter the data for the year & category and rename the state column
   top_10_state_category_year <-
@@ -455,7 +458,8 @@ output$downloadKidsData <- downloadHandler(
     arrange(desc(Value)) %>% head(10)
   })
   
-  ## Horizontal bars for top 10 countries in Category
+  
+  ## Horizontal bar plot for top 10 countries in Category
   output$top_ten_countries <- renderPlot({
 
     
@@ -476,6 +480,7 @@ output$downloadKidsData <- downloadHandler(
   })
   
   output$top_ten_countries_data <- DT::renderDataTable(DT::datatable(top_10_state_category_year()))
+  
   
   ## Parallel Coordinate Plot
   output$parl_coord_plot <- renderPlotly({
@@ -503,8 +508,39 @@ output$downloadKidsData <- downloadHandler(
 
   })
   
+<<<<<<< HEAD
 
 
+=======
+  
+  # Timeseries plot in Analysis tab
+  # Not working as its taking too much time to render
+  # output$timeSeries <- renderPlot({
+  #   
+  #   ggplot(nation_df, aes(FY, Counts/1000, group = Population, color = Population)) + 
+  #     geom_line() +
+  #     geom_segment(aes(xend = 2018, yend = Counts/1000), linetype = 5,colour =  'grey')+  
+  #     geom_point(size=2)+
+  #     transition_reveal(FY) + 
+  #     coord_cartesian(clip = 'off') + 
+  #     labs(title = 'Indicator values across years', x='Year', y = 'Indicator Count(K)')+
+  #     theme_minimal() + 
+  #     theme(legend.position = "bottom",
+  #           axis.ticks.x=element_blank(),
+  #           axis.ticks.y=element_blank(),
+  #           panel.grid.major = element_blank())
+  # })
+  
+  
+  output$nation <- DT::renderDataTable(
+    if(input$table=="National"){
+    DT::datatable(nation_df)
+    })
+  output$state <- DT::renderDataTable(
+    if(input$table=="State"){
+    DT::datatable(state_df)
+      })
+>>>>>>> b3b3e48c3c088fbd29ddecb8f6fecdffdae859b0
 
   
   
