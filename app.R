@@ -14,7 +14,13 @@ library(png)
 library(dplyr)
 library(magrittr)
 library(scales)
+library(tidytext)
 
+library(RColorBrewer)
+
+library(wordcloud)
+
+library(rsconnect)
 
 source("preprocessing.R", local = TRUE)
 
@@ -239,9 +245,6 @@ ui <- fluidPage(
     tabPanel("SocialMedia",
              sidebarPanel(
                h3("Input"),
-               actionButton("run","Run"),
-               fileInput(inputId = "file_1",
-                         label = "Or Select Input file:"),
                hr(),
                h3("Word Cloud Settings"),
                sliderInput("maxwords","Max # of Words:",min = 10, max = 200, value = 100, step = 10),
@@ -291,8 +294,9 @@ ui <- fluidPage(
       br(),
       h4("Final Report", style = "text-align:left"),
       div(
-        p("Our final report is available for review at:"),
-        a(href = "tbd", "tbd")
+       p("Our final report is available for review at:"),
+        a(href = "https://dsba5122finalproject.netlify.com/",
+         "https://dsba5122finalproject.netlify.com/")
         ,
         style = 'text-align:left'
       ),
@@ -633,33 +637,23 @@ output$downloadKidsData <- downloadHandler(
     DT::datatable(state_df)
       })
 
-  input_tweet_file <- reactive({
+  input_tweet_file <- function()({
     text <-  tibble(text = readLines(sprintf("./data/%s.txt", "TweetText"), encoding="UTF-8"))
-    
-    if(is.null(input$file_1)){
-      text
-    }else{
-      readLines(input$file_1$datapath)
-    }
-      
+
   })
 
-  
-  freq<-eventReactive(input$run, ignoreNULL=FALSE,{
-    withProgress({
-      setProgress(message = "Processing corpus...")
-      input_tweet_file()
-    })
-    
-  })
+
   
   output$cloud<-renderPlot({
     
-    text<-freq()
+    text <-  tibble(text = readLines(sprintf("./data/%s.txt", "TweetText")))
+    
+    
+   # text<-input_tweet_file()
    # text<-tibble(text=input_tweet_file())
 
     text <- text %>%
-      unnest_tokens(word, text) %>%
+      tidytext::unnest_tokens(word, text) %>%
       count(word, sort = TRUE) 
     
     
