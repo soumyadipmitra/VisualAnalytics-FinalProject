@@ -278,7 +278,8 @@ server <- function(input, output, session) {
     ggplot(df,aes(x = 1, weight = count, fill = indicators)) +
       geom_bar(width = 1, position = "stack") +
       coord_polar(theta = "y") +
-      geom_text(aes(x = 1, y = count, label = label),position = position_stack(vjust = .6))+
+      scale_fill_viridis(discrete = TRUE,name="Quartiles") +
+      geom_text(aes(x = 1, y = count, label = label),position = position_stack(vjust = .6),check_overlap = TRUE,color='white')+
       theme_void()  
 
   })
@@ -307,7 +308,7 @@ server <- function(input, output, session) {
     sunburst_0 = ggplot(firstLevel)
     sunburst_1 = sunburst_0 + 
       geom_bar(data=firstLevel, aes(x=1, y=total_pop), fill='grey', stat='identity') +
-      geom_text(aes(x=1, y=sum_total_pop/2, label=paste('Foster kids: ', comma(total_pop))), color='white')
+      geom_text(aes(x=1, y=sum_total_pop/2, label=paste('Foster kids: ', comma(total_pop))), color='blue',size=4,check_overlap = TRUE,fontface='bold')
     
     sunburst_1  + coord_polar('y')
     
@@ -357,7 +358,7 @@ server <- function(input, output, session) {
                                        color='white', position='stack', stat='identity')
     
     sunburst_3 = sunburst_2 + geom_text(data=secondLevel, aes(label=paste(Location, comma(total_pop)), x=2, y=pos, angle=angle))
-    sunburst_3 + scale_y_continuous(labels=comma) + scale_fill_continuous(low='white', high='blue') + coord_polar('y') + theme_minimal()
+    sunburst_3 + scale_y_continuous(labels=comma) + scale_fill_viridis() + coord_polar('y') + theme_minimal()
  
 
   })
