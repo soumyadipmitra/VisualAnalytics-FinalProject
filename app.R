@@ -232,12 +232,13 @@ ui <- fluidPage(
                                      
                ))
              ),
-    ## 'Data in Action' tab
+    ## 'SocialMedia' tab
     tabPanel("SocialMedia",
              sidebarPanel(
                h3("Input"),
+               actionButton("run","Run"),
                fileInput(inputId = "file_1",
-                         label = "Select Input file:"),
+                         label = "Or Select Input file:"),
                hr(),
                h3("Word Cloud Settings"),
                sliderInput("maxwords","Max # of Words:",min = 10, max = 200, value = 100, step = 10),
@@ -254,9 +255,7 @@ ui <- fluidPage(
                width = 3
              ),
              mainPanel(tabsetPanel(id="cloudTab",
-                                   tabsetPanel(
                                      tabPanel("Word Cloud",plotOutput("cloud", height = "600px"))
-                                   )
              ))
     ),
     tabPanel(
@@ -626,19 +625,30 @@ output$downloadKidsData <- downloadHandler(
       })
 
   input_tweet_file <- reactive({
+    text <-  tibble(text = readLines(sprintf("./data/%s.txt", "TweetText"), encoding="UTF-8"))
+    
     if(is.null(input$file_1)){
-      return("!! No data loaded !!")
+      text
+    }else{
+      readLines(input$file_1$datapath)
     }
-    readLines(input$file_1$datapath)
+      
   })
+
   
+  freq<-eventReactive(input$run, ignoreNULL=FALSE,{
+    withProgress({
+      setProgress(message = "Processing corpus...")
+      input_tweet_file()
+    })
+    
+  })
   
   output$cloud<-renderPlot({
     
-    text<-tibble(text=input_tweet_file())
-    #text <-  tibble(text = readLines(sprintf("./data/%s.txt", Inpfile), encoding="UTF-8"))
-    
-    # could also pass column of text/character instead
+    text<-freq()
+   # text<-tibble(text=input_tweet_file())
+
     text <- text %>%
       unnest_tokens(word, text) %>%
       count(word, sort = TRUE) 
