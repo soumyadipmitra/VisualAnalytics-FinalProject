@@ -206,7 +206,7 @@ ui <- tagList(
                    year to a historic high of 63,100 in FY 2018."),
                  br()),
                  conditionalPanel(
-                   condition = "input.analysisTab == 'Kids Distribution'",
+                   condition = "input.analysisTab == 'Kids Distribution'| input.analysisTab == 'Data'",
         p("This is a sunburst chart visualization that takes FosterCare kids distribution by AgeGroup across the United States and shows how they compare to one another.
         This not only allows the researcher to find patterns about which age groups are high and where to focus research,
         but also how the different fostercare categroies are changing over time.
