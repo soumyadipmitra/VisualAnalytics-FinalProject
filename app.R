@@ -252,7 +252,7 @@ server <- function(input, output, session) {
 
   
   kids_selectdf<- reactive({
-    kids_df<-kids %>%
+    kids_df<-kids_df %>%
       filter(LocationType=="State",TimeFrame==input$year2,DataFormat=="Number",AgeGroup==input$ageGroup)
     
   })
