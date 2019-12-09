@@ -136,6 +136,11 @@ ui <- tagList(
                  selectInput("state1", "Select a State or Nation:", choices =  unique(sort(state_nation_df$State))),
                  selectInput("state2", "Select Another State to Compare:", choices =  unique(sort(state_df$State)),selected = 'California')
                  ),
+                 # show download only for the data tab
+                 conditionalPanel(
+                   condition = "input.fosterkidsTab == 'Data'",
+                   downloadButton("downloadTop10", "Download")
+                 ),
                  h4("Description"),
                  p("This section focuses on comparing the most important categories:Served and Adoption across the country. 
                  The first part of the data involved finding information about number of Children in Foster Care in the United States. And the second part involves about the number of adoptions that are finalized each year.
@@ -166,7 +171,7 @@ ui <- tagList(
                  conditionalPanel(
                    condition = "input.analysisTab == 'Kids Distribution'",
                  sliderInput(
-                   "year2",
+                   "year3",
                    "Year :",
                    min = 2009,
                    max = 2018,
@@ -327,7 +332,7 @@ server <- function(input, output, session) {
   
   kids_selectdf<- reactive({
     kids_df<-kids_df %>%
-      filter(LocationType=="State",TimeFrame==input$year2,DataFormat=="Number",AgeGroup==input$ageGroup)
+      filter(LocationType=="State",TimeFrame==input$year3,DataFormat=="Number",AgeGroup==input$ageGroup)
     
   })
   
@@ -337,13 +342,14 @@ server <- function(input, output, session) {
 # download button for kids data grid
 output$downloadKidsData <- downloadHandler(
   filename = function() {
-    paste("Kids_distribution_",input$ageGroup,"_FY",input$year2,".csv", sep = "")
+    paste("Kids_distribution_",input$ageGroup,"_FY",input$year3,".csv", sep = "")
   },
   content = function(file) {
     write.csv(kids_selectdf(), file, row.names = FALSE)
   }
 )
- 
+
+
   output$sunburst_chart <- renderPlot({
     
     kids_df<-kids_selectdf()
@@ -489,6 +495,15 @@ output$downloadKidsData <- downloadHandler(
   
   output$top_ten_countries_data <- DT::renderDataTable(DT::datatable(top_10_state_category_year()))
   
+  # download button for kids data grid
+  output$downloadTop10 <- downloadHandler(
+    filename = function() {
+      paste("Top_10_States_",input$category,"_FY",input$year2,".csv", sep = "")
+    },
+    content = function(file) {
+      write.csv(top_10_state_category_year(), file, row.names = FALSE)
+    }
+  )
   
   ## Parallel Coordinate Plot
   output$parl_coord_plot <- renderPlotly({
