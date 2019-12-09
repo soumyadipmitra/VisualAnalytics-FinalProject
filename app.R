@@ -97,7 +97,11 @@ ui <- tagList(
                                          "State" = "State")
                              )),
                  h4("Description"),
-                 p("TODO"),
+                 p("This section focuses on looking into FosterCare and Adoption data to see distribution of various fostercare categories across the country. 
+                 The user has the ability to select by different categories from the dataset to see how the fostercare distribution changes.  This
+            allows the user to examine distribution across each state for different fostercare categories used and these could aid in their research towards understanding each state wise
+            Fostercare statistics."),
+                 br(),
                  width = 3
                ),
                mainPanel(tabsetPanel(id="dataActionTab",
@@ -130,8 +134,15 @@ ui <- tagList(
                  selectInput("state2", "Select Another State to Compare:", choices =  unique(sort(state_df$State)),selected = 'California')
                  ),
                  h4("Description"),
-                 p("TODO"),
-                 width = 3
+                 p("This section focuses on comparing the most important categories:Served and Adoption across the country. 
+                 The first part of the data involved finding information about number of Children in Foster Care in the United States. And the second part involves about the number of adoptions that are finalized each year.
+                   This would also allow the researcher to drill down to the state level and helps in understanding current trends between these two categories. "),
+                 br(),
+                 p("The user has the ability to select by these two categories from the dataset to see how the fostercare distribution changes.  We included the
+                 national average as a reference to see the level of impact of the selected state over time.This
+                 allows the user to examine distribution between two States or State vs National Average."),
+                 br(),
+                 width = 4
                ),
                mainPanel(tabsetPanel(id="fosterkidsTab",
                                      tabPanel("Plot",
@@ -143,16 +154,12 @@ ui <- tagList(
     tabPanel("Analysis",
                sidebarPanel(
                  h3("Input"),
-                 #conditionalPanel(
-                 #condition = "input.dataAction == 'Plot' | input.dataAction == 'Data'",
-                 #selectInput("ageGroup", "AgeGroup", choices = unique(state_df$State)),
-                 radioButtons("ageGroup", "Choose One:",
+                radioButtons("ageGroup", "Choose One:",
                               c("0 to 4" = "0 to 4",
                                 "5 to 11" = "5 to 11",
                                 "12 to 14" = "12 to 14",
                                 "15 to 17" = "15 to 17")),
                  selectInput("state3", "State", choices = unique(state_df$State)),
-                 #),
                  sliderInput(
                    "year2",
                    "Year :",
@@ -164,8 +171,24 @@ ui <- tagList(
                    sep = ""
                  ),
                  h4("Description"),
-                 p("TODO"),
-                 width = 3
+                 p("The analysis sections focuses on what the findings are based on the data from the previous sections and help the users draw conclusions from the data."),
+                 br(),
+                 p("Numbers of Children in Foster Care: Since FY 2012, the numbers of children in care on the last day of each fiscal year through FY 2017 have increased. 
+                   FY 2017’s 441,000 children represent an 11 percent increase over FY 2012’s 396,000. The numbers of children in care on the last day of FY 2018 as compared to FY 2017 is 
+                   virtually unchanged representing a decrease of slightly less than 1 percent."),
+                 br(),
+                 p("Children Adopted: The number of adoptions that are finalized each year has remained relatively flat during the FYs 2011, 2012, 2013 and 2014. 
+                   FY 2015’s 53,600 adoptions represented a nearly 6 percent increase over FY 2014’s 50,700. Each year since FY 2015 adoptions have increased each 
+                   year to a historic high of 63,100 in FY 2018."),
+                 br(),
+        p("Here the first visualization allows a user to select a state and compare important categories: Served and Adopted over time.
+        The idea is that user can use the previous sections to help guide there focus to certain states and then use the analysis tab to see
+        the relationships between the different dataset.
+        The second visualization is a sunburst chart that takes FosterCare kids distribution by AgeGroup across the United States and shows how they compare to one another.
+        This not only allows the researcher to find patterns about which age groups are high and where to focus research,
+        but also how the different fostercare categroies are changing over time.
+         "),
+                 width = 4
                ),
                mainPanel(tabsetPanel(id="analysisTab",
                                      tabPanel("Plot",
@@ -175,7 +198,7 @@ ui <- tagList(
              ),
     tabPanel(
       "References",
-      h3("Code Repository at Github", style = "text-align:left"),
+      h4("Code Repository at Github", style = "text-align:left"),
       div(
         p(
           "All our code is open source, please feel free run our code and use as is or develop new features:"
@@ -188,7 +211,7 @@ ui <- tagList(
         style = 'text-align:left'
       ),
       br(),
-      h3("Ideas for New Development", style = "text-align:left"),
+      h4("Ideas for New Development", style = "text-align:left"),
       div(
         p(
           "To review the features we implemented and see new features we would like to add in a future release visit:"
@@ -201,7 +224,7 @@ ui <- tagList(
         style = 'text-align:left'
       ),
       br(),
-      h3("Final Report", style = "text-align:left"),
+      h4("Final Report", style = "text-align:left"),
       div(
         p("Our final report is available for review at:"),
         a(href = "tbd", "tbd")
@@ -210,7 +233,7 @@ ui <- tagList(
       ),
       br(),
       div(
-        h3("Created By:"),
+        h4("Created By:"),
         h5("- SoumyaDip Mitra"),
         h5("- Shruti Agarwal"),
         h5("- Ramya Prakash")
