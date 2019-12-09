@@ -66,7 +66,7 @@ ui <- tagList(
                sidebarPanel(
                  h3("Input"),
                  conditionalPanel(
-                     condition = "input.dataActionTab == 'Plot' | input.dataActionTab == 'Data'",
+                     condition = "input.dataActionTab == 'Plot'",
                      selectInput("state", "State", choices = unique(state_df$State)),
                  ),
                  sliderInput("year", "Year :", min=2009, max=2018, value=2010, 
@@ -88,6 +88,12 @@ ui <- tagList(
                    condition = "input.dataActionTab == 'Data'",
                    downloadButton("downloadData", "Download")
                  ),
+                 conditionalPanel(
+                   condition = "input.dataActionTab == 'Data'",
+                 selectInput("table","Choose One: ",
+                             choices = c("National" = "National",
+                                         "State" = "State")
+                             )),
                  h4("Description"),
                  p("TODO"),
                  width = 3
@@ -100,10 +106,8 @@ ui <- tagList(
                  tabPanel("Plot",
                           plotOutput("pie_chart")),
                  tabPanel("Data",
-                          fluidRow(
-                            column(4, tableOutput("nation")),
-                            column(4, tableOutput("state"))
-                          ))
+                          DT::dataTableOutput("nation"),
+                          DT::dataTableOutput("state"))
                ))
              ),
     tabPanel("Foster Kids",
@@ -164,8 +168,7 @@ ui <- tagList(
                mainPanel(tabsetPanel(id="analysisTab",
                                      tabPanel("Plot",
                                               plotOutput("timeSeries",height="250px"),
-                                              plotOutput("sunburst_chart")),
-                                     tabPanel("Data",DT::dataTableOutput("state3"))
+                                              plotOutput("sunburst_chart"))
                ))
              ),
     tabPanel(
@@ -425,6 +428,14 @@ server <- function(input, output, session) {
 
   })
   
+  output$nation <- DT::renderDataTable(
+    if(input$table=="National"){
+    DT::datatable(nation_df)
+    })
+  output$state <- DT::renderDataTable(
+    if(input$table=="State"){
+    DT::datatable(state_df)
+      })
 
   
   
