@@ -521,7 +521,7 @@ output$downloadKidsData <- downloadHandler(
         text = ~ hover,
         locations = ~ STATE_ABBR,
         color = ~ Value,
-        colors = viridis_pal(option = "C")(3)
+        colors = viridis_pal(option = "C",begin = 1,end = 0.3)(3)
       ) %>%
       colorbar(title = paste(names(choiceNames)[choiceNames == input$map_category]), x = 0, y = 0.9) %>%
       layout(
