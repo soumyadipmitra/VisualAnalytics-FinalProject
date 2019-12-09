@@ -268,8 +268,8 @@ ui <- fluidPage(
       br(),
       div(
         h4("Created By:"),
-        h5("- SoumyaDip Mitra"),
-        h5("- Shruti Agarwal"),
+        h5("- Soumyadip Mitra"),
+        h5("- Shruti Agrawal"),
         h5("- Ramya Prakash")
         ,
         style = "text-align:center"
