@@ -225,9 +225,11 @@ ui <- fluidPage(
                                               # plotOutput("timeSeries",height="250px")
                                               tags$img(src = "timeseries_plot.gif",width = "100%",height="600px")
                                               ),
+                                     tabPanel("Data",DT::dataTableOutput("kids_by_Age_group_data")),
                                      tabPanel("Kids Distribution",
-                                              plotOutput("sunburst_chart")),
-                                     tabPanel("Data",DT::dataTableOutput("kids_by_Age_group_data"))
+                                              h3(textOutput("sunburst_text"), style = "text-align:center;font-weight:bold"),
+                                              plotOutput("sunburst_chart"))
+                                     
                ))
              ),
     ## 'Data in Action' tab
@@ -400,6 +402,12 @@ output$downloadKidsData <- downloadHandler(
 )
 
 
+  ## Sunburst text
+  output$sunburst_text <- renderText({
+    paste("Kids Distribution in ",input$year3)
+  })
+
+
   output$sunburst_chart <- renderPlot({
     
     kids_df<-kids_selectdf()
@@ -461,7 +469,7 @@ output$downloadKidsData <- downloadHandler(
                                        color='white', position='stack', stat='identity')
     
     sunburst_3 = sunburst_2 + geom_text(data=secondLevel, aes(label=paste(Location, comma(total_pop)), x=2, y=pos, angle=angle),color='black')
-    sunburst_3 + scale_y_continuous(labels=comma) + scale_fill_viridis() + coord_polar('y') + theme_minimal()+
+    sunburst_3 + scale_y_continuous(labels=comma) + scale_fill_viridis(option="C",begin = 0.7,end = 1) + coord_polar('y') + theme_minimal()+
     labs(x="",y="")
 
   })
