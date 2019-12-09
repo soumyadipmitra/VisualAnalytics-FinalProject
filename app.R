@@ -508,10 +508,7 @@ output$downloadKidsData <- downloadHandler(
 
   })
   
-<<<<<<< HEAD
 
-
-=======
   
   # Timeseries plot in Analysis tab
   # Not working as its taking too much time to render
@@ -540,9 +537,7 @@ output$downloadKidsData <- downloadHandler(
     if(input$table=="State"){
     DT::datatable(state_df)
       })
->>>>>>> b3b3e48c3c088fbd29ddecb8f6fecdffdae859b0
 
-  
   
 }
 
