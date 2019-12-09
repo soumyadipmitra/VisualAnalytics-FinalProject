@@ -75,13 +75,13 @@ ui <- fluidPage(
                sidebarPanel(
                  h3("Input"),
                  conditionalPanel(
-                     condition = "input.dataActionTab == 'Plot'",
+                     condition = "input.dataActionTab == 'Category Breakdowns'",
                      selectInput("state", "State", choices = unique(state_df$State)),
                  ),
                  sliderInput("year", "Year :", min=2009, max=2018, value=2010, 
                              animate = animationOptions(interval=1000,loop=TRUE),sep = ""),
                  conditionalPanel(
-                   condition = "input.dataActionTab == 'Map'",
+                   condition = "input.dataActionTab == 'National Comparison'",
                  selectInput("map_category","Select the Category: ",
                              choices = c("Served" = "Served",
                                "In Care as of Sep 30" = "InCare_Sep30",
@@ -112,12 +112,12 @@ ui <- fluidPage(
                  width = 3
                ),
                mainPanel(tabsetPanel(id="dataActionTab",
-                 tabPanel("Map",
+                 tabPanel("National Comparison",
                           h3(textOutput("map_text"), style = "text-align:center;font-weight:bold"),
                           # textOutput("map_text"),
                           plotlyOutput("map",width = "100%",height="800")
                           ),
-                 tabPanel("Plot",
+                 tabPanel("Category Breakdowns",
                           h3(textOutput("pie_text"), style = "text-align:center;font-weight:bold"),
                           plotlyOutput("pie_chart"),width="100%",height="800"),
                  tabPanel("Data",
@@ -138,7 +138,7 @@ ui <- fluidPage(
                  sliderInput("year2", "Year :", min=2009, max=2018, value=2010, 
                              animate = animationOptions(interval=1000,loop=TRUE),sep = ""),
                  conditionalPanel(
-                 condition = "input.fosterkidsTab == 'Plot'",
+                 condition = "input.fosterkidsTab == 'State Comparison'",
                  selectInput("state1", "Select a State or Nation:", choices =  unique(sort(state_nation_df$State))),
                  selectInput("state2", "Select Another State to Compare:", choices =  unique(sort(state_df$State)),selected = 'California')
                  ),
@@ -163,7 +163,7 @@ ui <- fluidPage(
                  width = 4
                ),
                mainPanel(tabsetPanel(id="fosterkidsTab",
-                                     tabPanel("Plot",
+                                     tabPanel("State Comparison",
                                               h3(textOutput("top10states_text"), style = "text-align:center;font-weight:bold"),
                                               plotOutput("top_ten_states",height="250px"),
                                               plotlyOutput("parl_coord_plot")),
@@ -203,7 +203,7 @@ ui <- fluidPage(
                  p("The analysis sections focuses on what the findings are based on the data from the previous sections and help the users draw conclusions from the data."),
                  br(),
                  conditionalPanel(
-                   condition = "input.analysisTab == 'Time Series View'",
+                   condition = "input.analysisTab == 'A Time Series View'",
                  p("Numbers of Children in Foster Care: Since FY 2012, the numbers of children in care on the last day of each fiscal year through FY 2017 have increased. 
                    FY 2017’s 441,000 children represent an 11 percent increase over FY 2012’s 396,000. The numbers of children in care on the last day of FY 2018 as compared to FY 2017 is 
                    virtually unchanged representing a decrease of slightly less than 1 percent."),
@@ -221,7 +221,7 @@ ui <- fluidPage(
                  width = 4
                ),
                mainPanel(tabsetPanel(id="analysisTab",
-                                     tabPanel("Time Series View",
+                                     tabPanel("A Time Series View",
                                               # plotOutput("timeSeries",height="250px")
                                               tags$img(src = "timeseries_plot.gif",width = "100%",height="600px")
                                               ),
@@ -295,8 +295,8 @@ ui <- fluidPage(
       br(),
       div(
         h4("Created By:"),
-        h5("- SoumyaDip Mitra"),
-        h5("- Shruti Agarwal"),
+        h5("- Soumyadip Mitra"),
+        h5("- Shruti Agrawal"),
         h5("- Ramya Prakash")
         ,
         style = "text-align:center"
@@ -326,7 +326,7 @@ server <- function(input, output, session) {
       gather(indicators,count,'Served':'adopted')
   })
   
-  #<< pie-chart-Starts
+  ## Pie Chart Plotly
   output$pie_chart <- renderPlotly({
     
     df <- pie_selectdf() %>%
@@ -345,7 +345,10 @@ server <- function(input, output, session) {
     #   geom_text(aes(x = 1, y = count, label = label),position = position_stack(vjust = .6),check_overlap = TRUE,color='white')+
     #   theme_void()  
     
-    plot_ly(df, labels = ~Group, values = ~count, type = 'pie') %>%
+    plot_ly(df, labels = ~Group, values = ~count,
+            marker = list(colors = viridis_pal(option = "D")(3),
+                          line = list(color = '#FFFFFF', width = 1))) %>%
+      add_pie(hole = 0.6) %>%
       layout(xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
              yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE))
 
@@ -462,6 +465,8 @@ output$downloadKidsData <- downloadHandler(
     labs(x="",y="")
 
   })
+  
+  
   ## Map Text
   output$map_text <- renderText({
     paste(names(choiceNames)[choiceNames == input$map_category]," in ",input$year)
@@ -499,7 +504,7 @@ output$downloadKidsData <- downloadHandler(
         text = ~ hover,
         locations = ~ STATE_ABBR,
         color = ~ Value,
-        colors = viridis_pal(option = "D")(3)
+        colors = viridis_pal(option = "C")(3)
       ) %>%
       colorbar(title = paste(names(choiceNames)[choiceNames == input$map_category]), x = 0, y = 0.9) %>%
       layout(
