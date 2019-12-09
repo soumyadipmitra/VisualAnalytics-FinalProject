@@ -70,6 +70,7 @@ ui <- fluidPage(
       ),
       br(),
     ),
+    ## 'Data in Action' tab
     tabPanel("Data in Action",
                sidebarPanel(
                  h3("Input"),
@@ -117,6 +118,7 @@ ui <- fluidPage(
                           plotlyOutput("map",width = "100%",height="800")
                           ),
                  tabPanel("Plot",
+                          h3(textOutput("pie_text"), style = "text-align:center;font-weight:bold"),
                           plotOutput("pie_chart")),
                  tabPanel("Data",
                           DT::dataTableOutput("nation"),
@@ -281,6 +283,13 @@ ui <- fluidPage(
 
 
 server <- function(input, output, session) {
+  
+  ## Pie Text
+  output$pie_text <- renderText({
+    paste("Breakdown for ",input$state," in ",input$year)
+  })
+    
+    
   pie_selectdf<- reactive({
     
       state_df %>%
