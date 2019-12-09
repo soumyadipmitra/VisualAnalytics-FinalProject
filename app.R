@@ -318,7 +318,9 @@ server <- function(input, output, session) {
     #   geom_text(aes(x = 1, y = count, label = label),position = position_stack(vjust = .6),check_overlap = TRUE,color='white')+
     #   theme_void()  
     
-    plot_ly(df, labels = ~Group, values = ~count) %>%
+    plot_ly(df, labels = ~Group, values = ~count,
+            marker = list(colors = viridis_pal(option = "D")(3),
+                          line = list(color = '#FFFFFF', width = 1))) %>%
       add_pie(hole = 0.6) %>%
       layout(xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
              yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE))
@@ -473,7 +475,7 @@ output$downloadKidsData <- downloadHandler(
         text = ~ hover,
         locations = ~ STATE_ABBR,
         color = ~ Value,
-        colors = viridis_pal(option = "D")(3)
+        colors = viridis_pal(option = "C")(3)
       ) %>%
       colorbar(title = paste(names(choiceNames)[choiceNames == input$map_category]), x = 0, y = 0.9) %>%
       layout(
