@@ -172,6 +172,11 @@ ui <- tagList(
                                 "5 to 11" = "5 to 11",
                                 "12 to 14" = "12 to 14",
                                 "15 to 17" = "15 to 17"))),
+                 # show download only for the data tab
+                 conditionalPanel(
+                   condition = "input.analysisTab == 'Data'",
+                   downloadButton("downloadKidsData", "Download")
+                 ),
                  h4("Description"),
                  p("The analysis sections focuses on what the findings are based on the data from the previous sections and help the users draw conclusions from the data."),
                  br(),
@@ -285,7 +290,30 @@ server <- function(input, output, session) {
   })
   #<< pie-chart-Ends
   
-
+  output$nation <- DT::renderDataTable(
+    if(input$table=="National"){
+      DT::datatable(
+        filter(nation_df,FY==input$year))
+    })
+  output$state <- DT::renderDataTable(
+    if(input$table=="State"){
+      DT::datatable( filter(state_df,year==input$year))
+    })
+  
+  # download button for kids data grid
+  output$downloadData <- downloadHandler(
+    filename = function() {
+      paste("FosterCare_Adoption_Distribution_",input$table,"_FY",input$year,".csv", sep = "")
+    },
+    content = function(file) {
+      if(input$table=="National"){
+      write.csv(filter(nation_df,FY==input$year), file, row.names = FALSE)
+      }
+      if(input$table=="State"){
+        write.csv(filter(state_df,year==input$year), file, row.names = FALSE)
+      }
+    }
+  )
   
   kids_selectdf<- reactive({
     kids_df<-kids_df %>%
@@ -295,7 +323,16 @@ server <- function(input, output, session) {
   
   output$kids_by_Age_group_data <- DT::renderDataTable(DT::datatable(kids_selectdf()))
   
-  
+
+# download button for kids data grid
+output$downloadKidsData <- downloadHandler(
+  filename = function() {
+    paste("Kids_distribution_",input$ageGroup,"_FY",input$year2,".csv", sep = "")
+  },
+  content = function(file) {
+    write.csv(kids_selectdf(), file, row.names = FALSE)
+  }
+)
  
   output$sunburst_chart <- renderPlot({
     
@@ -466,14 +503,8 @@ server <- function(input, output, session) {
 
   })
   
-  output$nation <- DT::renderDataTable(
-    if(input$table=="National"){
-    DT::datatable(nation_df)
-    })
-  output$state <- DT::renderDataTable(
-    if(input$table=="State"){
-    DT::datatable(state_df)
-      })
+
+
 
   
   
