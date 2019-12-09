@@ -2,9 +2,11 @@
 
 Shiny App: https://ramyaprakash.shinyapps.io/dsba5122-FinalProject-FosterCare-And-Adoption/
 
-## Project Objective
+## Project Topic
+**Foster Care Analysis for US States**
 
-This is a research project for DSBA-5122 at UNC Charlotte. For the project we wanted to explore data related to Foster Care and Adoption System across US. Foster care is intended to provide temporary, safe living arrangements and therapeutic services for children who cannot remain safely at home because of risk for maltreatment or inadequate care. Foster care arrangements include non-relative foster homes, relative foster homes (also known as “kinship care”), group homes, institutions, and pre-adoptive homes.
+## Project Objective
+This is a research project for DSBA-5122 course at UNC Charlotte taken by Prof. Ryan Wesslen. For the project we wanted to explore data related to Foster Care and Adoption System across US. Foster care is intended to provide temporary, safe living arrangements and therapeutic services for children who cannot remain safely at home because of risk for maltreatment or inadequate care. Foster care arrangements include non-relative foster homes, relative foster homes (also known as “kinship care”), group homes, institutions, and pre-adoptive homes.
 
 Our domain problem is one for a socialworker wanting to provide support and services to the foster kids. But a social worker can only access existing resources in a community. If no resources exist, there is nothing that a social worker can really do except provide a continuing, stable presence in the child’s life. This is where we need to do better as a community to help foster kids. We need to give them access to resources so that if an adoption isn’t available, they will still have tools, a supportive environment, and people who care about their dreams. There is great potential for data and technology to be used to help tackle the complex problems faced by the sector, ensure the well-being of foster youth, and even reduce the number of children who end up in foster care in the first place.
 
@@ -14,12 +16,12 @@ This data would allow the social worker to see the distribution of different fos
 
 ## Source Data
 Our source data is available at:
-- National DataSet [https://www.acf.hhs.gov/sites/default/files/cb/national_afcars_trends_2009_through_2018.xlsx] 
-- State Level DataSet [https://www.acf.hhs.gov/sites/default/files/cb/afcars_state_data_tables_09thru18.xlsx]
-- FosterKids Data by Age Group [https://datacenter.kidscount.org/data/tables/101-child-population-by-age-group]
-- Twitter [https://twitter.com]
+- [National DataSet](https://www.acf.hhs.gov/sites/default/files/cb/national_afcars_trends_2009_through_2018.xlsx)
+- [State Level DataSet](https://www.acf.hhs.gov/sites/default/files/cb/afcars_state_data_tables_09thru18.xlsx)
+- [FosterKids Data by Age Group](https://datacenter.kidscount.org/data/tables/101-child-population-by-age-group)
+- [Twitter](https://twitter.com)
 
 ## Collaborators (Group Members):
-- SoumyaDip Mitra
+- Soumyadip Mitra
 - Shruti Agarwal
 - Ramya Prakash
