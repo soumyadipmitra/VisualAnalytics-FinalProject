@@ -58,8 +58,11 @@ ui <- tagList(
         p("Our source data is available at:"),
         a(href = "https://www.acf.hhs.gov/sites/default/files/cb/national_afcars_trends_2009_through_2018.xlsx", "National DataSet"),
         br(),
-        a(href = "https://www.acf.hhs.gov/sites/default/files/cb/afcars_state_data_tables_09thru18.xlsx", "State Level DataSet")
-        ,
+        a(href = "https://www.acf.hhs.gov/sites/default/files/cb/afcars_state_data_tables_09thru18.xlsx", "State Level DataSet"),
+        br(),
+        a(href = "https://datacenter.kidscount.org/data/tables/101-child-population-by-age-group", "FosterKids Data by Age Group"),
+        br(),
+        a(href = "https://twitter.com", "Twitter"),
         style = 'text-align:left'
       ),
       br(),
@@ -157,7 +160,9 @@ ui <- tagList(
              ),
     tabPanel("Analysis",
                sidebarPanel(
-                 h3("Input"),
+                 conditionalPanel(
+                   condition = "input.analysisTab == 'Kids Distribution'| input.analysisTab == 'Data'",
+                 h3("Input")),
                  conditionalPanel(
                    condition = "input.analysisTab == 'Kids Distribution'",
                  sliderInput(
@@ -400,8 +405,8 @@ output$downloadKidsData <- downloadHandler(
                                        color='white', position='stack', stat='identity')
     
     sunburst_3 = sunburst_2 + geom_text(data=secondLevel, aes(label=paste(Location, comma(total_pop)), x=2, y=pos, angle=angle),color='black')
-    sunburst_3 + scale_y_continuous(labels=comma) + scale_fill_viridis() + coord_polar('y') + theme_minimal()
- 
+    sunburst_3 + scale_y_continuous(labels=comma) + scale_fill_viridis() + coord_polar('y') + theme_minimal()+
+    labs(x="",y="")
 
   })
   ## Map Text
