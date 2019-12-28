@@ -1,6 +1,7 @@
 # Final Project for Visual Analytics (DSBA 5122) taken by Prof. Ryan Wesslen
 
 Shiny App: https://ramyaprakash.shinyapps.io/dsba5122-FinalProject-FosterCare-And-Adoption/
+https://soumyadip-mitra.shinyapps.io/FosterCareAnalysis/
 
 Bookdown Documentation: https://dsba5122finalproject.netlify.com/
 

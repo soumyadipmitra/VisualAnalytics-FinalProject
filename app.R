@@ -15,11 +15,8 @@ library(dplyr)
 library(magrittr)
 library(scales)
 library(tidytext)
-
 library(RColorBrewer)
-
 library(wordcloud)
-
 library(rsconnect)
 
 source("preprocessing.R", local = TRUE)
